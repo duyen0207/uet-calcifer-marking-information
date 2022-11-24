@@ -32,8 +32,31 @@ INNER JOIN problem p ON e.ProblemId = p.ProblemId
 INNER JOIN practice_class pc ON e.ClassId = pc.ClassId
 WHERE s.SubmittedLink IS NOT NULL AND s.Score IS NULL AND s.TestcaseResult IS NULL;`;
 
+
+app.get("/", (req, res) => {
+  res.send("<p>Hello, this is uet calcifer api</p>")
+});
 // routes
 app.get("/data", (req, res) => {
+  var data = [];
+
+  database.getConnection(function (err, tempConnection) {
+    if (err) res.send("Error occured.");
+    database.query(dataQuery, function (err, result, fields) {
+      if (err) throw err;
+      data = result;
+      const output = {
+        totalRecords: result.length,
+        data: data,
+      };
+
+      res.json(output);
+      tempConnection.release();
+    });
+  });
+});
+
+app.post("/data", (req, res) => {
   var data = [];
 
   database.getConnection(function (err, tempConnection) {
