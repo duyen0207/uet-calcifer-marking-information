@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marking Information</title>
+    <link rel="stylesheet" href="./css/index.css" />
+  </head>
+  <body>
+    <div class="header">
+      <h2>Marking information</h2>
+      <button onclick="onSubmitData(event)" id="submit-button">Submit</button>
+    </div>
+    <div class="total-records"></div>
+    <div class="container">
+      <table id="marking-data-table">
+        <thead class="header-table">
+          <tr>
+            <th>STT</th>
+            <th>Mã sinh viên</th>
+            <th>Họ và tên</th>
+            <th>Đề bài</th>
+            <th>Mã bài tập</th>
+            <th>Mã lớp thực hành</th>
+            <th>Mã bài nộp</th>
+            <th>Lần nộp</th>
+            <th>Link bài nộp</th>
+            <th>Kết quả test case</th>
+            <th>Điểm số</th>
+            <th>Thứ tự test sai</th>
+            <th>Báo cáo lỗi sai</th>
+          </tr>
+        </thead>
+        <tbody class="body-table"></tbody>
+      </table>
+    </div>
+  </body>
+  <script src="./lib/jquery-3.6.0.min.js"></script>
+  <script src="./js/constants.js"></script>
+
+  <script src="./js/index.js"></script>
+</html>
