@@ -18,19 +18,6 @@ $(document).ready(function () {
 });
 
 // fetch API--------------------------------------------
-function filterSubmissions(e) {
-  console.log(e.target.value);
-  const filter = e.target.value;
-  loadMarkingData(filter);
-}
-
-// search
-function search(searchPattern = "") {
-  const filter = $("#filter").val();
-  console.log(filter, searchPattern);
-  loadMarkingData((isMarked = filter), (search = searchPattern));
-}
-
 // load and show data
 function loadMarkingData(isMarked = FILTER.NOT_MARKED, search = "") {
   const URL = `${SERVER_URL}/data/filter?isMarked=${isMarked}&search=${search}`;
