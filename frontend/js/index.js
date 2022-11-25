@@ -1,16 +1,46 @@
 $(document).ready(function () {
   loadMarkingData();
+  $("#search-input").change(function (e) {
+    e.preventDefault();
+    loadMarkingData(
+      (isMarked = $("#filter").val()),
+      (search = $("#search-input").val())
+    );
+  });
+
+  $("#filter").change(function (e) {
+    e.preventDefault();
+    loadMarkingData(
+      (isMarked = $("#filter").val()),
+      (search = $("#search-input").val())
+    );
+  });
 });
 
 // fetch API--------------------------------------------
+function filterSubmissions(e) {
+  console.log(e.target.value);
+  const filter = e.target.value;
+  loadMarkingData(filter);
+}
+
+// search
+function search(searchPattern = "") {
+  const filter = $("#filter").val();
+  console.log(filter, searchPattern);
+  loadMarkingData((isMarked = filter), (search = searchPattern));
+}
+
 // load and show data
-function loadMarkingData() {
-  console.log(API.getData);
-  fetch(API.getData)
+function loadMarkingData(isMarked = FILTER.NOT_MARKED, search = "") {
+  const URL = `${SERVER_URL}/data/filter?isMarked=${isMarked}&search=${search}`;
+
+  console.log(URL);
+  fetch(URL)
     .then((response) => {
       // gọi api và trả về response
       if (response.status === 200) {
-        console.log(response.status);
+        console.log("load data: ", response.status);
         return response.json();
       }
     })
@@ -29,14 +59,36 @@ function loadMarkingData() {
     });
 }
 // post marking data
-function updateMarking() {
-  
+function updateMarkingData(data) {
+  console.log("this is score: ", JSON.stringify(data));
+  let fetchData = {
+    method: "PUT",
+    body: JSON.stringify(data),
+    headers: new Headers({
+      "Content-Type": "application/json; charset=UTF-8",
+    }),
+  };
+  console.log("aaaaaaaaaaaaaaaa: ", API.updateMarking, fetchData);
+  fetch(API.updateMarking, fetchData)
+    .then((response) => {
+      if (response.status === 200) {
+        // console.log("update: ",response.status);
+      }
+    })
+    .then(() => {
+      emptyTable();
+    })
+    .then(() => {
+      // load lại bảng dữ liệu
+      // loadMarkingData();
+    })
+    .catch((err) => console.log(err));
 }
 
 // render data--------------------------------------------
 function createDataRows(data, totalRecords) {
-  console.log(data);
-  $(".total-records").append(`Tổng số: ${totalRecords}`);
+  // console.log(data);
+  $(".total-records").append(`${totalRecords}`);
   for (let i = 0; i < data.length; i++) {
     $("#marking-data-table > tbody").append(`<tr>
     <td class="No">${i}</td>
@@ -97,6 +149,8 @@ function onSubmitData(e) {
     submissionReportData: submissionReportData,
   });
 
+  updateMarkingData(submissionData);
+
   return {
     submissionData: submissionData,
     submissionReportData: submissionReportData,
@@ -107,8 +161,9 @@ function onSubmitData(e) {
 /**
  * Function: empty table data
  */
- function emptyTable() {
+function emptyTable() {
   $("#marking-data-table > tbody").empty();
+  $(".total-records").empty();
 }
 function formatData(data) {
   if (!data) return "";

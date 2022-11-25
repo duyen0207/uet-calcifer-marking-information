@@ -9,10 +9,36 @@
   </head>
   <body>
     <div class="header">
-      <h2>Marking information</h2>
-      <button onclick="onSubmitData(event)" id="submit-button">Submit</button>
+      <div>
+        <div class="title">
+          <h2>Marking information</h2>
+          <button onclick="onSubmitData(event)" id="submit-button">
+            Submit
+          </button>
+        </div>
+      </div>
+      <div class="space-between-box">
+        <div class="flex-start-box">
+          <select
+            name="Submitted"
+            id="filter"
+          >
+            <option value="0" selected>Chưa có điểm</option>
+            <option value="1">Đã chấm điểm</option>
+            <option value="2">Tất cả bài nộp</option>
+          </select>
+          <div>Tổng số: <span class="total-records">0</span></div>
+        </div>
+        <div>
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Tìm kiếm sinh viên theo mã"
+          />
+        </div>
+      </div>
     </div>
-    <div class="total-records"></div>
+
     <div class="container">
       <table id="marking-data-table">
         <thead class="header-table">
