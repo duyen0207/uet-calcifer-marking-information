@@ -11,3 +11,16 @@ const FILTER = {
   MARKED: "1",
   ALL: "2",
 };
+
+const REPORT_DATA = [
+  {
+    ErrorTestcaseOrder: 1,
+    TestcaseDescript: "test 1",
+    ErrorReport: "lỗi sai",
+  },
+  {
+    ErrorTestcaseOrder: 4,
+    TestcaseDescript: "test 4",
+    ErrorReport: "lỗi saiiii",
+  },
+];

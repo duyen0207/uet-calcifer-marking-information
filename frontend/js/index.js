@@ -26,20 +26,29 @@ $(document).ready(function () {
     const studentId = $(element).parent().attr("id");
     chooseColumn = `#${studentId} .${element.className}`;
 
+    // click to view test case reports
+    if (element.className == "show-report") {
+      console.log("Xem báo cáo", element.id);
+      const submissionId = element.id;
+      loadSubmissionReportsData(submissionId);
+      $(".modal").show();
+    }
+
+    // click to edit score or test case results
     if (element.className == "score" || element.className == "testcaseResult") {
       // edit input
       $("#edit-input").val($(chooseColumn).text());
 
-      console.log(
-        element.offsetHeight,
-        $(element).offset().top,
-        $(element).offset().left,
+      // console.log(
+      //   element.offsetHeight,
+      //   $(element).offset().top,
+      //   $(element).offset().left,
 
-        $(element).attr("height"),
-        $(element),
-        studentId,
-        chooseColumn
-      );
+      //   $(element).attr("height"),
+      //   $(element),
+      //   studentId,
+      //   chooseColumn
+      // );
 
       // đặt vị trí ô input
       $("#edit-input").css({
@@ -54,13 +63,14 @@ $(document).ready(function () {
         left: `${$(element).offset().left}px`,
       });
       $("#edit-input").show();
-    }
+    } else $("#edit-input").hide();
   });
 
+  // event onchange edit
   $("#edit-input").change(function (e) {
     console.log("heyyyyy: ", chooseColumn);
     $(chooseColumn).text($("#edit-input").val());
-    // $("#edit-input").val("");
+    $("#edit-input").hide();
   });
 });
 
@@ -81,6 +91,8 @@ function loadMarkingData(isMarked = FILTER.NOT_MARKED, search = "") {
     .then((data) => {
       // làm trống bảng dữ liệu
       emptyTable();
+      $("#edit-input").hide();
+
       console.log("thành công: ", data);
       return data;
     })
@@ -92,6 +104,27 @@ function loadMarkingData(isMarked = FILTER.NOT_MARKED, search = "") {
       console.log("Không lấy được dữ liệu!");
     });
 }
+// load report result data
+function loadSubmissionReportsData(submissionId = "") {
+  const URL = `${SERVER_URL}/data/submission-report?submissionId=${submissionId}`;
+
+  console.log(URL);
+  fetch(URL)
+    .then((response) => {
+      // gọi api và trả về response
+      if (response.status === 200) {
+        console.log("load submission reports: ", response.status);
+        return response.json();
+      }
+    })
+    .then((data) => {
+      createReportDataRows(data);
+    })
+    .catch(function (err) {
+      console.log("Không lấy được dữ liệu!");
+    });
+}
+
 // post marking data
 function updateMarkingData(data) {
   console.log("this is score: ", JSON.stringify(data));
@@ -102,19 +135,16 @@ function updateMarkingData(data) {
       "Content-Type": "application/json; charset=UTF-8",
     }),
   };
-  console.log("aaaaaaaaaaaaaaaa: ", API.updateMarking, fetchData);
   fetch(API.updateMarking, fetchData)
     .then((response) => {
-      if (response.status === 200) {
-        // console.log("update: ",response.status);
-      }
+      console.log("update: ", response);
     })
     .then(() => {
       emptyTable();
     })
     .then(() => {
       // load lại bảng dữ liệu
-      // loadMarkingData();
+      loadMarkingData();
     })
     .catch((err) => console.log(err));
 }
@@ -141,11 +171,32 @@ function createDataRows(data, totalRecords) {
     )}" target="_blank">${formatData(data[i]?.SubmittedLink)}</a></td>
     <td class="testcaseResult">${formatData(data[i]?.TestcaseResult)}</td>
     <td class="score">${formatData(data[i]?.Score)}</td>
-    <td class="errorTestcaseOrder">${formatData(
-      data[i]?.errorTestcaseOrder
-    )}</td>
-    <td class="errorReport">${formatData(data[i]?.errorReport)}</td>
+    <td class="submissionReport">${
+      formatData(data[i]?.Score) != ""
+        ? `<div id='${formatData(
+            data[i]?.SubmissionId
+          )}' class='show-report'>Xem</div>`
+        : ""
+    }</td>
+    
   </tr>`);
+  }
+}
+
+function createReportDataRows(data = REPORT_DATA) {
+  $("#report-table > tbody").empty();
+  for (let i = 0; i < data.length; i++) {
+    $("#report-table > tbody").append(
+      `<tr id='${formatData(data[i]?.SubmissionId)}'>
+          <td class="errorTestcaseOrder">${formatData(
+            data[i].ErrorTestcaseOrder
+          )}</td>
+          <td class="testcaseDescript">${formatData(
+            data[i].TestcaseDescript
+          )}</td>
+          <td class="errorReport">${formatData(data[i].ErrorReport)}</td>
+        </tr>`
+    );
   }
 }
 
@@ -209,3 +260,13 @@ function formatData(data) {
   if (!data) return "";
   return data;
 }
+/**
+ * Function: close something when click outside
+ */
+$(document).mouseup(function (e) {
+  // close modal
+  if ($(e.target).closest(".modal .modal-content").length === 0) {
+    $(".modal").hide();
+    console.log("đã đóng. đang clear table");
+  }
+});

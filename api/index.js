@@ -45,7 +45,7 @@ app.get("/data/filter", (req, res) => {
     const isMarked = req.query?.isMarked;
     const search = req.query?.search;
 
-    console.log("query string: ", isMarked, notEmpty(search));
+    // console.log("query string: ", isMarked, notEmpty(search));
 
     const dataQuery = `SELECT s.StudentId, a.FullName, p.ProblemTitle, e.ExerciseId, 
     pc.ClassId, s.SubmissionId, s.Iter, s.SubmittedLink, s.TestcaseResult, s.Score 
@@ -85,8 +85,32 @@ app.get("/data/filter", (req, res) => {
     });
   });
 });
+// load submission report
+app.get("/data/submission-report", (req, res) => {
+  database.getConnection(function (err, tempConnection) {
+    if (err) res.send("Error occured.");
 
-// update data
+    const submissionId = req.query?.submissionId;
+
+    if (notEmpty(submissionId)) {
+      const dataQuery = `SELECT sr.ErrorTestcaseOrder, t.TestcaseDescript, sr.ErrorReport FROM submission_report sr 
+    INNER JOIN submission s ON sr.SubmissionId = s.SubmissionId
+    INNER JOIN exercise e ON s.ExerciseId = e.ExerciseId
+    INNER JOIN problem p ON e.ProblemId = p.ProblemId
+    INNER JOIN testcase t ON p.ProblemId = t.ProblemId
+    WHERE sr.SubmissionId='${submissionId}';`;
+
+      database.query(dataQuery, function (err, result, fields) {
+        if (err) throw err;
+
+        res.json(result);
+        tempConnection.release();
+      });
+    } else res.json((message = "không tìm được"));
+  });
+});
+
+// update score
 app.put("/data", (req, res) => {
   console.log("hello, this is marking: ");
   database.getConnection(function (err, tempConnection) {
@@ -94,12 +118,12 @@ app.put("/data", (req, res) => {
 
     if (err) res.send("Error occured.");
     for (let i = 0; i < data.length; i++) {
-      if (notEmpty(data[i].TestcaseResult) && notEmpty(data[i].SubmissionId)) {
+      if (notEmpty(data[i].testcaseResult) && notEmpty(data[i].submissionId)) {
         const updateQuery = `UPDATE submission s
-      SET
-          TestcaseResult = ${data[i].TestcaseResult},
-          Score = ${data[i].Score}
-      WHERE SubmissionId = ${data[i].SubmissionId};`;
+        SET
+            TestcaseResult = ${data[i].testcaseResult},
+            Score = ${data[i].score}
+        WHERE SubmissionId = ${data[i].submissionId};`;
 
         database.query(updateQuery, function (err, result, fields) {
           if (err) throw err;
