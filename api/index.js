@@ -58,10 +58,10 @@ app.get("/data/filter", (req, res) => {
     ${
       // chưa chấm?
       isMarked == 0
-        ? "AND s.Score IS NULL AND s.TestcaseResult IS NULL "
+        ? "AND (s.Score ='' OR s.Score IS NULL) AND (s.TestcaseResult ='' OR s.TestcaseResult IS NULL)"
         : // đã chấm?
         isMarked == 1
-        ? " AND s.Score IS NOT NULL AND s.TestcaseResult IS NOT NULL "
+        ? " AND (s.Score !='' AND s.Score IS NOT NULL) AND (s.TestcaseResult !='' AND s.TestcaseResult IS NOT NULL)"
         : // tất cả bài nộp
           " "
     }

@@ -23,7 +23,7 @@ $(document).ready(function () {
 
     e.stopPropagation();
     console.log(e.target);
-
+    
   });
 });
 
