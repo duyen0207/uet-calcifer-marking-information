@@ -18,12 +18,49 @@ $(document).ready(function () {
   });
 
   // click in table
+  var chooseColumn = null;
   $("#marking-data-table >tbody").click(function (e) {
-    console.log(e.target);
-
     e.stopPropagation();
-    console.log(e.target);
-    
+
+    const element = e.target;
+    const studentId = $(element).parent().attr("id");
+    chooseColumn = `#${studentId} .${element.className}`;
+
+    if (element.className == "score" || element.className == "testcaseResult") {
+      // edit input
+      $("#edit-input").val($(chooseColumn).text());
+
+      console.log(
+        element.offsetHeight,
+        $(element).offset().top,
+        $(element).offset().left,
+
+        $(element).attr("height"),
+        $(element),
+        studentId,
+        chooseColumn
+      );
+
+      // đặt vị trí ô input
+      $("#edit-input").css({
+        height: `${element.offsetHeight}px`,
+        width: `${element.offsetWidth - 10}px`,
+        maxHeight: "20px",
+        minWidth: "20px",
+        backgroundColor: `${$(`#${studentId}`).css("background-color")}`,
+
+        position: "absolute",
+        top: `${$(element).offset().top + (element.offsetHeight - 20) / 2}px`,
+        left: `${$(element).offset().left}px`,
+      });
+      $("#edit-input").show();
+    }
+  });
+
+  $("#edit-input").change(function (e) {
+    console.log("heyyyyy: ", chooseColumn);
+    $(chooseColumn).text($("#edit-input").val());
+    // $("#edit-input").val("");
   });
 });
 

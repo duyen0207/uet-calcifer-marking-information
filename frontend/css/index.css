@@ -60,9 +60,16 @@ select {
 }
 
 #edit-input {
+  display: none;
   outline: none;
   border: none;
+  background-color: #fff;
   border-bottom: solid 1px #a0b4f2;
+
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
 }
 #edit-input:focus {
   border-bottom-width: 2px;
@@ -89,7 +96,10 @@ th {
   text-align: left;
   padding: 4px;
 }
+tr {
+  background-color: #fff;
 
+}
 tr:nth-child(even) {
   background-color: #dddddd;
 }
