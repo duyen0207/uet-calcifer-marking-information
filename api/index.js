@@ -94,20 +94,22 @@ app.put("/data", (req, res) => {
 
     if (err) res.send("Error occured.");
     for (let i = 0; i < data.length; i++) {
-      const updateQuery = `UPDATE submission s
+      if (notEmpty(data[i].TestcaseResult) && notEmpty(data[i].SubmissionId)) {
+        const updateQuery = `UPDATE submission s
       SET
           TestcaseResult = ${data[i].TestcaseResult},
           Score = ${data[i].Score}
       WHERE SubmissionId = ${data[i].SubmissionId};`;
 
-      database.query(updateQuery, function (err, result, fields) {
-        if (err) throw err;
-        res.json({
-          message: `Update success: ${data.length}`,
-          data: data,
+        database.query(updateQuery, function (err, result, fields) {
+          if (err) throw err;
+          res.json({
+            message: `Update success: ${data.length}`,
+            data: data,
+          });
+          tempConnection.release();
         });
-        tempConnection.release();
-      });
+      }
     }
   });
 });
