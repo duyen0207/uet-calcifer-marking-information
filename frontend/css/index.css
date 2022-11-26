@@ -80,7 +80,7 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
-thead {
+thead th {
   background-color: #a0b4f2;
   position: sticky;
   top: 0;
