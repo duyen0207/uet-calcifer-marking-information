@@ -1,5 +1,6 @@
 $(document).ready(function () {
   loadMarkingData();
+  // tìm kiếm
   $("#search-input").change(function (e) {
     e.preventDefault();
     loadMarkingData(
@@ -7,13 +8,22 @@ $(document).ready(function () {
       (search = $("#search-input").val())
     );
   });
-
+  // select
   $("#filter").change(function (e) {
     e.preventDefault();
     loadMarkingData(
       (isMarked = $("#filter").val()),
       (search = $("#search-input").val())
     );
+  });
+
+  // click in table
+  $("#marking-data-table >tbody").click(function (e) {
+    console.log(e.target);
+
+    e.stopPropagation();
+    console.log(e.target);
+
   });
 });
 
@@ -77,7 +87,9 @@ function createDataRows(data, totalRecords) {
   // console.log(data);
   $(".total-records").append(`${totalRecords}`);
   for (let i = 0; i < data.length; i++) {
-    $("#marking-data-table > tbody").append(`<tr>
+    $("#marking-data-table > tbody").append(`<tr id='${formatData(
+      data[i]?.StudentId
+    )}'>
     <td class="No">${i}</td>
     <td class="studentId">${formatData(data[i]?.StudentId)}</td>
     <td class="fullName">${formatData(data[i]?.FullName)}</td>
@@ -87,7 +99,9 @@ function createDataRows(data, totalRecords) {
 
     <td class="submissionId">${formatData(data[i]?.SubmissionId)}</td>
     <td class="iter">${formatData(data[i]?.Iter)}</td>
-    <td class="submittedLink">${formatData(data[i]?.SubmittedLink)}</td>
+    <td class="submittedLink"><a href="${formatData(
+      data[i]?.SubmittedLink
+    )}" target="_blank">${formatData(data[i]?.SubmittedLink)}</a></td>
     <td class="testcaseResult">${formatData(data[i]?.TestcaseResult)}</td>
     <td class="score">${formatData(data[i]?.Score)}</td>
     <td class="errorTestcaseOrder">${formatData(
@@ -137,6 +151,8 @@ function onSubmitData(e) {
   });
 
   updateMarkingData(submissionData);
+
+  alert("Update marks successful!");
 
   return {
     submissionData: submissionData,

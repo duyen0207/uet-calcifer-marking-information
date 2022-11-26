@@ -29,6 +29,9 @@ const config = {
 };
 const database = mysql.createPool(config);
 
+// const postData = `INSERT submission_report (SubmissionId, ErrorTestcaseOrder, ErrorReport)
+// VALUES ('${SubmissionId}', ${ErrorTestcaseOrder},'${ErrorReport}');`;
+
 // routes-------------------------------------------------------
 app.get("/", (req, res) => {
   res.send("<p>Hello, this is uet calcifer api</p>");
