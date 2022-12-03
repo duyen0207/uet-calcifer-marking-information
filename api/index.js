@@ -48,7 +48,7 @@ app.get("/data/filter", (req, res) => {
     // console.log("query string: ", isMarked, notEmpty(search));
 
     const dataQuery = `SELECT s.StudentId, a.FullName, p.ProblemTitle, e.ExerciseId, 
-    pc.ClassId, s.SubmissionId, s.Iter, s.SubmittedLink, s.TestcaseResult, s.Score 
+    pc.ClassId, s.SubmissionId, s.Iter, p.TestcaseScript, s.SubmittedLink, s.TestcaseResult, s.Score 
     FROM submission s 
     INNER JOIN account a ON s.StudentId = a.AccountId
     INNER JOIN exercise e ON s.ExerciseId = e.ExerciseId
@@ -111,12 +111,13 @@ app.get("/data/submission-report", (req, res) => {
 });
 
 // update score
-app.put("/data", (req, res) => {
-  console.log("hello, this is marking: ");
-  database.getConnection(function (err, tempConnection) {
-    const data = req.body;
-    if (err) res.send("Error occured.");
+var errors = [];
+
+function pushMarkingData(data) {
+  return new Promise((resolve) => {
     for (let i = 0; i < data.length; i++) {
+      const submissionReports = data[i]?.submissionReports;
+      console.log("đang chạy đến: ", i);
       if (notEmpty(data[i].testcaseResult) && notEmpty(data[i].submissionId)) {
         const updateQuery = `UPDATE submission s
         SET
@@ -125,15 +126,71 @@ app.put("/data", (req, res) => {
         WHERE SubmissionId = ${data[i].submissionId};`;
 
         database.query(updateQuery, function (err, result, fields) {
-          if (err) throw err;
-          res.json({
-            message: `Update success: ${data.length}`,
-            data: data,
-          });
-          tempConnection.release();
+          if (err) {
+            console.log(err.code);
+            res.send("Error occured.", err);
+          }
         });
+
+        // insert submission reports----------------------------------------
+        if (submissionReports) {
+          for (let j = 0; j < submissionReports.length; j++) {
+            const insertReportQuery = `INSERT submission_report
+             (SubmissionId, ErrorTestcaseOrder, ErrorReport)
+            VALUES ('${data[i].submissionId}', ${submissionReports[j].errorTestcaseOrder}, '${submissionReports[j].submissionReports}');`;
+
+            database.query(insertReportQuery, function (err, result, fields) {
+              if (err) {
+                if (err.code == "ER_DUP_ENTRY") {
+                  errors.push({
+                    submissionId: data[i].submissionId,
+                    testcaseOrder: submissionReports[j].errorTestcaseOrder,
+                    error: "Dữ liệu đã tồn tại, không thể insert.",
+                  });
+                }
+                // kết thúc promise
+                if (i == data.length - 1) {
+                  console.log("kết thúc.");
+                  resolve(errors);
+                }
+              }
+            });
+          }
+        } else {
+          if (i == data.length - 1) {
+            console.log("kết thúc.");
+            resolve(errors);
+          }
+        }
+        // -----------------------------------------------------------------
       }
     }
+  });
+}
+
+app.put("/data", (req, res) => {
+  console.log("hello, this is marking: ");
+
+  database.getConnection(function (err, tempConnection) {
+    const data = req.body;
+
+    if (err) {
+      res.send("Error occured.", err);
+    }
+
+    pushMarkingData(data).then((results) => {
+      console.log("aaaaaaa: ", results);
+      const output = {
+        message: `Update success: ${data.length}`,
+        errors: {
+          totals: results.length,
+          details: results,
+        },
+      };
+      res.json(output);
+      tempConnection.release();
+    });
+    // res.json((message = "update"));
   });
 });
 

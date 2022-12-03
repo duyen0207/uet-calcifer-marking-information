@@ -137,6 +137,15 @@ td.errorReport {
   overflow-wrap: break-word;
 }
 
+td.testcaseScript, td.submittedLink {
+  max-width: 200px;
+  overflow-wrap: break-word;
+  
+}
+.testcaseScript a {
+  color: rgb(66, 26, 66);
+}
+
 .title {
   display: flex;
   justify-content: space-between;

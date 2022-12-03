@@ -35,7 +35,11 @@ $(document).ready(function () {
     }
 
     // click to edit score or test case results
-    if (element.className == "score" || element.className == "testcaseResult") {
+    if (
+      element.className == "score" ||
+      element.className == "testcaseResult" ||
+      (element.className == "submissionReport" && $("#filter").val() == 0)
+    ) {
       // edit input
       $("#edit-input").val($(chooseColumn).text());
 
@@ -142,10 +146,12 @@ function updateMarkingData(data) {
     }),
   };
   fetch(API.updateMarking, fetchData)
-    .then((response) => {
-      console.log("update: ", response);
+    .then((res) => {
+      // console.log("update: ", response);
+      console.log("updateeee", res);
     })
     .then(() => {
+      console.log("vừa upload xong, đang load lại bảng: ");
       emptyTable();
     })
     .then(() => {
@@ -172,6 +178,9 @@ function createDataRows(data, totalRecords) {
 
     <td class="submissionId">${formatData(data[i]?.SubmissionId)}</td>
     <td class="iter">${formatData(data[i]?.Iter)}</td>
+    <td class="testcaseScript"><a href="${formatData(
+      data[i]?.TestcaseScript
+    )}">${formatData(data[i]?.TestcaseScript)}</a></td>
     <td class="submittedLink"><a href="${formatData(
       data[i]?.SubmittedLink
     )}" target="_blank">${formatData(data[i]?.SubmittedLink)}</a></td>
@@ -208,34 +217,36 @@ function createReportDataRows(data = REPORT_DATA) {
 
 // collect inputs--------------------------------------------
 function onSubmitData(e) {
+  let updateAmount = 0;
+
   let submissionIdRows = $(".body-table tr td.submissionId");
   let testcaseResultRows = $(".body-table tr td.testcaseResult");
   let scoreRows = $(".body-table tr td.score");
+  let submissionReportRows = $(".body-table tr td.submissionReport");
 
   let submissionData = [];
-  let submissionReportData = [];
 
   for (let i = 0; i < submissionIdRows.length; i++) {
     const submissionId = submissionIdRows[i].innerText;
-    console.log("Hello", submissionIdRows[i]);
     const testcaseResult = testcaseResultRows[i].innerText;
     const score = scoreRows[i].innerText;
-
-    submissionData.push({
-      submissionId: submissionId,
-      testcaseResult: testcaseResult,
-      score: score,
-    });
+    if (testcaseResult != "" && score != "") {
+      submissionData.push({
+        submissionId: submissionId,
+        testcaseResult: testcaseResult,
+        score: score,
+      });
+      updateAmount++;
+    }
   }
 
   console.log({
-    submissionData: submissionData,
-    submissionReportData: submissionReportData,
+    submissionData: submissionData
   });
 
   updateMarkingData(submissionData);
 
-  alert("Update marks successful!");
+  // alert(`Update marks successful ${updateAmount} records!`);
 }
 
 // utils functions----------------------------------------------
