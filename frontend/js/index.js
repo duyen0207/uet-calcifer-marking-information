@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  loadMarkingData();
+  loadMarkingData((isMarked = $("#filter").val()));
   // tìm kiếm
   $("#search-input").change(function (e) {
     e.preventDefault();
@@ -82,6 +82,18 @@ $(document).ready(function () {
     // e.preventDefault();
     onSubmitData(e);
   });
+
+  /**
+   * Function: close something when click outside
+   */
+  $(".modal").click(function (e) {
+    // e.preventDefault();
+    if (e.target !== this) {
+      return;
+    }
+    $(".modal").hide();
+    console.log("đã đóng. đang clear table");
+  });
 });
 
 // fetch API--------------------------------------------
@@ -146,13 +158,15 @@ function updateMarkingData(data) {
     }),
   };
   fetch(API.updateMarking, fetchData)
-    .then((res) => {
-      // console.log("update: ", response);
-      console.log("updateeee", res);
+    .then((response) => {
+      console.log("update: ", response);
+      return response.json();
     })
-    .then(() => {
-      console.log("vừa upload xong, đang load lại bảng: ");
-      emptyTable();
+    .then((res) => {
+      console.log("vừa upload xong, đang load lại bảng: ", res);
+      alert(res.message, JSON.stringify(res.errors));
+      // emptyTable();
+      return res;
     })
     .then(() => {
       // load lại bảng dữ liệu
@@ -217,8 +231,6 @@ function createReportDataRows(data = REPORT_DATA) {
 
 // collect inputs--------------------------------------------
 function onSubmitData(e) {
-  let updateAmount = 0;
-
   let submissionIdRows = $(".body-table tr td.submissionId");
   let testcaseResultRows = $(".body-table tr td.testcaseResult");
   let scoreRows = $(".body-table tr td.score");
@@ -230,18 +242,36 @@ function onSubmitData(e) {
     const submissionId = submissionIdRows[i].innerText;
     const testcaseResult = testcaseResultRows[i].innerText;
     const score = scoreRows[i].innerText;
+
     if (testcaseResult != "" && score != "") {
+      // chú ý: submission report lấy từ input phải được bao ngoài bởi dấu ``
+      // vd: `[{"errorTestcaseOrder": 1,"errorReport": "Lỗi sai ở test 1"}]`
+      let submissionReports = submissionReportRows[i].innerText;
+      // xử lý bỏ dấu ``
+      submissionReports = submissionReports.slice(
+        1,
+        submissionReports.length - 1
+      );
+      // console.log("slice: ", submissionReports, submissionReports.length);
+      try {
+        submissionReports = JSON.parse(submissionReports);
+      } catch (error) {
+        console.log(
+          "chú ý: submission report lấy từ input phải được bao ngoài bởi dấu ``."
+        );
+        console.log(error);
+      }
       submissionData.push({
         submissionId: submissionId,
         testcaseResult: testcaseResult,
         score: score,
+        submissionReports: submissionReports,
       });
-      updateAmount++;
     }
   }
 
   console.log({
-    submissionData: submissionData
+    submissionData: submissionData,
   });
 
   updateMarkingData(submissionData);
@@ -261,9 +291,9 @@ function formatData(data) {
   if (!data) return "";
   return data;
 }
-/**
- * Function: close something when click outside
- */
+
+// if ($(".modal").is(":visible")) {
+// }
 // $(document).mouseup(function (e) {
 //   // close modal
 //   if ($(e.target).closest(".modal .modal-content").length === 0) {

@@ -112,12 +112,14 @@ app.get("/data/submission-report", (req, res) => {
 
 // update score
 var errors = [];
+var updateSuccessCount = 0;
+var insertSuccessCount = 0;
 
 function pushMarkingData(data) {
+  resetSuccessCount();
   return new Promise((resolve) => {
     for (let i = 0; i < data.length; i++) {
-      const submissionReports = data[i]?.submissionReports;
-      console.log("đang chạy đến: ", i);
+      // console.log("đang chạy đến: ", i);
       if (notEmpty(data[i].testcaseResult) && notEmpty(data[i].submissionId)) {
         const updateQuery = `UPDATE submission s
         SET
@@ -129,40 +131,67 @@ function pushMarkingData(data) {
           if (err) {
             console.log(err.code);
             res.send("Error occured.", err);
-          }
-        });
-
-        // insert submission reports----------------------------------------
-        if (submissionReports) {
-          for (let j = 0; j < submissionReports.length; j++) {
-            const insertReportQuery = `INSERT submission_report
-             (SubmissionId, ErrorTestcaseOrder, ErrorReport)
-            VALUES ('${data[i].submissionId}', ${submissionReports[j].errorTestcaseOrder}, '${submissionReports[j].submissionReports}');`;
-
-            database.query(insertReportQuery, function (err, result, fields) {
-              if (err) {
-                if (err.code == "ER_DUP_ENTRY") {
-                  errors.push({
-                    submissionId: data[i].submissionId,
-                    testcaseOrder: submissionReports[j].errorTestcaseOrder,
-                    error: "Dữ liệu đã tồn tại, không thể insert.",
-                  });
-                }
-                // kết thúc promise
-                if (i == data.length - 1) {
-                  console.log("kết thúc.");
-                  resolve(errors);
-                }
-              }
+            errors.push({
+              submissionId: data[i].submissionId,
+              error: `Update lỗi: ${err.code}`,
             });
+          } else {
+            updateSuccessCount += result?.affectedRows;
+            console.log("update: ", updateSuccessCount, result?.message);
           }
-        } else {
+          // ket thuc promise
           if (i == data.length - 1) {
-            console.log("kết thúc.");
+            console.log("update resolve.");
             resolve(errors);
           }
+        });
+      } else {
+        if (i == data.length - 1) {
+          console.log("update resolve.");
+          resolve(errors);
         }
-        // -----------------------------------------------------------------
+      }
+    }
+  });
+}
+
+function pushSubmissionReportData(data) {
+  insertSuccessCount = 0;
+  return new Promise((resolve) => {
+    for (let i = 0; i < data.length; i++) {
+      const submissionReports = data[i]?.submissionReports;
+      // nếu ko có test sai
+      if (!submissionReports) {
+        console.log("không có test case nào sai.");
+        if (i == data.length - 1) resolve(errors);
+      }
+      // nếu có test sai
+      else {
+        for (let j = 0; j < submissionReports.length; j++) {
+          const insertReportQuery = `INSERT submission_report
+                (SubmissionId, ErrorTestcaseOrder, ErrorReport)
+                VALUES ('${data[i].submissionId}', ${submissionReports[j].errorTestcaseOrder}, '${submissionReports[j].errorReport}');`;
+
+          database.query(insertReportQuery, function (err, result, fields) {
+            if (err) {
+              if (err.code == "ER_DUP_ENTRY") {
+                errors.push({
+                  submissionId: data[i].submissionId,
+                  testcaseOrder: submissionReports[j].errorTestcaseOrder,
+                  error:
+                    "Dữ liệu đã tồn tại, không thể insert submission report.",
+                });
+                console.log("lỗi sai: ", j);
+              }
+            } else {
+              insertSuccessCount += result?.affectedRows;
+            }
+            // kết thúc promise
+            if (i == data.length - 1 && j == submissionReports.length - 1) {
+              resolve(errors);
+            }
+          });
+        }
       }
     }
   });
@@ -179,18 +208,20 @@ app.put("/data", (req, res) => {
     }
 
     pushMarkingData(data).then((results) => {
-      console.log("aaaaaaa: ", results);
-      const output = {
-        message: `Update success: ${data.length}`,
-        errors: {
-          totals: results.length,
-          details: results,
-        },
-      };
-      res.json(output);
-      tempConnection.release();
+      pushSubmissionReportData(data).then((results) => {
+        console.log("aaaaaaa: ");
+        const output = {
+          message: `Update marking success: ${updateSuccessCount}/${data.length} records, Insert submission reports success: ${insertSuccessCount} records`,
+          errors: {
+            totals: results.length,
+            details: results,
+          },
+        };
+        res.json(output);
+        tempConnection.release();
+        return results;
+      });
     });
-    // res.json((message = "update"));
   });
 });
 
@@ -208,4 +239,10 @@ app.listen(port, () => {
 function notEmpty(data) {
   if (data) return data.length != 0 && data != "undefined" && data != "null";
   return false;
+}
+
+function resetSuccessCount() {
+  updateSuccessCount = 0;
+  insertSuccessCount = 0;
+  errors = [];
 }
