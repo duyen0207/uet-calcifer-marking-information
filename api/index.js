@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 3001;
 const bodyParser = require("body-parser");
 const multer = require("multer"); // v1.0.5
 const upload = multer(); // for parsing multipart/form-data
@@ -115,7 +115,6 @@ app.put("/data", (req, res) => {
   console.log("hello, this is marking: ");
   database.getConnection(function (err, tempConnection) {
     const data = req.body;
-
     if (err) res.send("Error occured.");
     for (let i = 0; i < data.length; i++) {
       if (notEmpty(data[i].testcaseResult) && notEmpty(data[i].submissionId)) {

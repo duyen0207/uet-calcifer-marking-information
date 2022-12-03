@@ -1,5 +1,5 @@
 // SERVER API------------------------------------------------------
-const SERVER_URL = "http://localhost:3000";
+const SERVER_URL = "http://localhost:3001";
 
 const API = {
   getData: `${SERVER_URL}/data`,

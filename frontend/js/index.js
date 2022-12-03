@@ -72,6 +72,12 @@ $(document).ready(function () {
     $(chooseColumn).text($("#edit-input").val());
     $("#edit-input").hide();
   });
+
+  $("#submit-button").click(function (e) {
+    console.log("click submit");
+    // e.preventDefault();
+    onSubmitData(e);
+  });
 });
 
 // fetch API--------------------------------------------
@@ -202,34 +208,23 @@ function createReportDataRows(data = REPORT_DATA) {
 
 // collect inputs--------------------------------------------
 function onSubmitData(e) {
-  e.preventDefault();
-
   let submissionIdRows = $(".body-table tr td.submissionId");
   let testcaseResultRows = $(".body-table tr td.testcaseResult");
   let scoreRows = $(".body-table tr td.score");
-  let errorTestcaseOrderRows = $(".body-table tr td.errorTestcaseOrder");
-  let errorReportRows = $(".body-table tr td.errorReport");
 
   let submissionData = [];
   let submissionReportData = [];
 
   for (let i = 0; i < submissionIdRows.length; i++) {
     const submissionId = submissionIdRows[i].innerText;
+    console.log("Hello", submissionIdRows[i]);
     const testcaseResult = testcaseResultRows[i].innerText;
     const score = scoreRows[i].innerText;
-    const errorTestcaseOrder = errorTestcaseOrderRows[i].innerText;
-    const errorReport = errorReportRows[i].innerText;
 
     submissionData.push({
       submissionId: submissionId,
       testcaseResult: testcaseResult,
       score: score,
-    });
-
-    submissionReportData.push({
-      submissionId: submissionId,
-      errorTestcaseOrder: errorTestcaseOrder,
-      errorReport: errorReport,
     });
   }
 
@@ -241,11 +236,6 @@ function onSubmitData(e) {
   updateMarkingData(submissionData);
 
   alert("Update marks successful!");
-
-  return {
-    submissionData: submissionData,
-    submissionReportData: submissionReportData,
-  };
 }
 
 // utils functions----------------------------------------------
@@ -263,10 +253,10 @@ function formatData(data) {
 /**
  * Function: close something when click outside
  */
-$(document).mouseup(function (e) {
-  // close modal
-  if ($(e.target).closest(".modal .modal-content").length === 0) {
-    $(".modal").hide();
-    console.log("đã đóng. đang clear table");
-  }
-});
+// $(document).mouseup(function (e) {
+//   // close modal
+//   if ($(e.target).closest(".modal .modal-content").length === 0) {
+//     $(".modal").hide();
+//     console.log("đã đóng. đang clear table");
+//   }
+// });
