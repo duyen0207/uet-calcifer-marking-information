@@ -170,7 +170,9 @@ function pushSubmissionReportData(data) {
         for (let j = 0; j < submissionReports.length; j++) {
           const insertReportQuery = `INSERT submission_report
                 (SubmissionId, ErrorTestcaseOrder, ErrorReport)
-                VALUES ('${data[i].submissionId}', ${submissionReports[j].errorTestcaseOrder}, '${submissionReports[j].errorReport}');`;
+                VALUES ('${data[i].submissionId}', ${
+            submissionReports[j].errorTestcaseOrder
+          }, '${formatJSON(submissionReports[j].errorReport)}');`;
 
           database.query(insertReportQuery, function (err, result, fields) {
             if (err) {
@@ -245,4 +247,10 @@ function resetSuccessCount() {
   updateSuccessCount = 0;
   insertSuccessCount = 0;
   errors = [];
+}
+
+// replace ' by ` in sql query variable
+function formatJSON(data) {
+  let res = data.replace(/'/g, "`");
+  console.log(res);
 }
