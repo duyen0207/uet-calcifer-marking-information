@@ -1,14 +1,27 @@
 const express = require("express");
-const app = express();
-const port = 3001;
+const cron = require("node-cron");
+let shell = require("shelljs");
+
+const ejs = require("ejs");
 const bodyParser = require("body-parser");
 const multer = require("multer"); // v1.0.5
-const upload = multer(); // for parsing multipart/form-data
-
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
 const cors = require("cors");
+const mysql = require("mysql");
+
+const { notEmpty, resetSuccessCount, formatJSON } = require("./utils/utils");
+const { exportJSONFile } = require("./utils/handleFile");
+const { readReport } = require("./cypress/results/readReport");
+const { getScoreByTestResult, ScoringSubmissions } = require("./utils/scoring");
+
+const app = express();
+const port = 3001;
+
+// for parsing multipart/form-data
+const upload = multer();
+// for parsing application/json
+app.use(bodyParser.json());
+// for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const corsOptions = {
   origin: "*",
@@ -18,8 +31,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// connect to uet_calcifer database
-const mysql = require("mysql");
+// connect to database
 const config = {
   connectionLimit: 10,
   host: "127.0.0.1",
@@ -29,12 +41,26 @@ const config = {
 };
 const database = mysql.createPool(config);
 
-// const postData = `INSERT submission_report (SubmissionId, ErrorTestcaseOrder, ErrorReport)
-// VALUES ('${SubmissionId}', ${ErrorTestcaseOrder},'${ErrorReport}');`;
+getNotScoredSubmissions(database);
+
+// cron.schedule("*/5 * * * * *", async function () {
+//   console.log("Cron job");
+//   getNotScoredSubmissions(database);
+//   // console.log("this is data: ", getNotScoredSubmissions(database));
+//   // if (shell.exec("node cronJob/cronTest.js").code !== 0) {
+//   //   console.log("Some thing went wrong!");
+//   // }
+// });
 
 // routes-------------------------------------------------------
 app.get("/", (req, res) => {
-  res.send("<p>Hello, this is uet calcifer api</p>");
+  ejs.renderFile("views/ssr.ejs", {}, {}, function (err, template) {
+    if (err) {
+      throw err;
+    } else {
+      res.end(template);
+    }
+  });
 });
 
 // load data
@@ -45,41 +71,17 @@ app.get("/data/filter", (req, res) => {
     const isMarked = req.query?.isMarked;
     const search = req.query?.search;
 
-    // console.log("query string: ", isMarked, notEmpty(search));
+    const sql = "CALL Proc_Submission_GetNotScoredAndSearch(?)";
 
-    const dataQuery = `SELECT s.StudentId, a.FullName, p.ProblemTitle, e.ExerciseId, 
-    pc.ClassId, s.SubmissionId, s.Iter, p.TestcaseScript, s.SubmittedLink, s.TestcaseResult, s.Score 
-    FROM submission s 
-    INNER JOIN account a ON s.StudentId = a.AccountId
-    INNER JOIN exercise e ON s.ExerciseId = e.ExerciseId
-    INNER JOIN problem p ON e.ProblemId = p.ProblemId
-    INNER JOIN practice_class pc ON e.ClassId = pc.ClassId
-    WHERE s.SubmittedLink IS NOT NULL 
-    ${
-      // chưa chấm?
-      isMarked == 0
-        ? "AND (s.Score ='' OR s.Score IS NULL) AND (s.TestcaseResult ='' OR s.TestcaseResult IS NULL)"
-        : // đã chấm?
-        isMarked == 1
-        ? " AND (s.Score !='' AND s.Score IS NOT NULL) AND (s.TestcaseResult !='' AND s.TestcaseResult IS NOT NULL)"
-        : // tất cả bài nộp
-          " "
-    }
-    ${
-      notEmpty(search)
-        ? `AND s.StudentId LIKE '%${search}%' OR a.FullName LIKE '%${search}%'`
-        : " "
-    }
-    ;`;
-
-    database.query(dataQuery, function (err, result, fields) {
+    database.query(sql, search, function (err, result, fields) {
       if (err) throw err;
       const data = result;
       const output = {
         totalRecords: result.length,
-        data: data,
+        data: data[0],
       };
 
+      // console.log("data ", data[0]);
       res.json(output);
       tempConnection.release();
     });
@@ -93,14 +95,9 @@ app.get("/data/submission-report", (req, res) => {
     const submissionId = req.query?.submissionId;
 
     if (notEmpty(submissionId)) {
-      const dataQuery = `SELECT sr.ErrorTestcaseOrder, t.TestcaseDescript, sr.ErrorReport FROM submission_report sr 
-    INNER JOIN submission s ON sr.SubmissionId = s.SubmissionId
-    INNER JOIN exercise e ON s.ExerciseId = e.ExerciseId
-    INNER JOIN problem p ON e.ProblemId = p.ProblemId
-    INNER JOIN testcase t ON p.ProblemId = t.ProblemId
-    WHERE sr.SubmissionId='${submissionId}';`;
+      const dataQuery = "CALL Proc_SubmissionReport_GetOf(?)";
 
-      database.query(dataQuery, function (err, result, fields) {
+      database.query(dataQuery, submissionId, function (err, result, fields) {
         if (err) throw err;
 
         res.json(result);
@@ -121,30 +118,32 @@ function pushMarkingData(data) {
     for (let i = 0; i < data.length; i++) {
       // console.log("đang chạy đến: ", i);
       if (notEmpty(data[i].testcaseResult) && notEmpty(data[i].submissionId)) {
-        const updateQuery = `UPDATE submission s
-        SET
-            TestcaseResult = ${data[i].testcaseResult},
-            Score = ${data[i].score}
-        WHERE SubmissionId = ${data[i].submissionId};`;
+        const updateQuery = "CALL Proc_Submission_UpdateScoreResult(?,?,?)";
 
-        database.query(updateQuery, function (err, result, fields) {
-          if (err) {
-            console.log(err.code);
-            res.send("Error occured.", err);
-            errors.push({
-              submissionId: data[i].submissionId,
-              error: `Update lỗi: ${err.code}`,
-            });
-          } else {
-            updateSuccessCount += result?.affectedRows;
-            console.log("update: ", updateSuccessCount, result?.message);
+        database.query(
+          updateQuery,
+          data[i].testcaseResult,
+          data[i].score,
+          data[i].submissionId,
+          function (err, result, fields) {
+            if (err) {
+              console.log(err.code);
+              res.send("Error occured.", err);
+              errors.push({
+                submissionId: data[i].submissionId,
+                error: `Update lỗi: ${err.code}`,
+              });
+            } else {
+              updateSuccessCount += result?.affectedRows;
+              console.log("update: ", updateSuccessCount, result?.message);
+            }
+            // ket thuc promise
+            if (i == data.length - 1) {
+              console.log("update resolve.");
+              resolve(errors);
+            }
           }
-          // ket thuc promise
-          if (i == data.length - 1) {
-            console.log("update resolve.");
-            resolve(errors);
-          }
-        });
+        );
       } else {
         if (i == data.length - 1) {
           console.log("update resolve.");
@@ -237,20 +236,30 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-// utils function -----------------------------
-function notEmpty(data) {
-  if (data) return data.length != 0 && data != "undefined" && data != "null";
-  return false;
-}
+// get data function------------------------------------
+function getNotScoredSubmissions(database) {
+  database.getConnection(function (err, tempConnection) {
+    if (err) console.log("Error is: ", err);
 
-function resetSuccessCount() {
-  updateSuccessCount = 0;
-  insertSuccessCount = 0;
-  errors = [];
-}
+    const sql = "CALL Proc_Submission_GetNotScored";
 
-// replace ' by ` in sql query variable
-function formatJSON(data) {
-  let res = data.replace(/'/g, "`");
-  console.log(res);
+    console.log("[1] Getting submissions not scored...");
+    database.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      const data = result[0];
+      const output = {
+        totalRecords: result.length,
+        data: data,
+      };
+
+      exportJSONFile(data);
+
+      // cypress run
+      shell.exec("yarn cy:scoring");
+      console.log("Doneeee!");
+
+      let reports = readReport();
+      ScoringSubmissions(reports, database, tempConnection);
+    });
+  });
 }

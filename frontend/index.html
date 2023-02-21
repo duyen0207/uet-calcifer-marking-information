@@ -12,7 +12,7 @@
       <div>
         <div class="title">
           <h2>Marking information</h2>
-          <button id="submit-button">
+          <button type="submit" id="submit-button" onsubmit="onSubmitData">
             Submit
           </button>
         </div>
@@ -39,7 +39,7 @@
 
     <!-- data table----------------------------------------------------->
     <div class="container">
-      <table id="marking-data-table">
+      <table id="scoring-data-table">
         <input type="text" id="edit-input" placeholder="Nhập..." />
         <!-- <textarea name="" id="edit-input" cols="30" rows="10"></textarea> -->
 
@@ -48,16 +48,16 @@
             <th>STT</th>
             <th>Mã sinh viên</th>
             <th>Họ và tên</th>
-            <th>Đề bài</th>
-            <th>Mã bài tập</th>
             <th>Mã lớp thực hành</th>
             <th>Mã bài nộp</th>
             <th>Lần nộp</th>
-            <th>Link Test Script</th>
-            <th>Link bài nộp</th>
+            <th>Bài nộp</th>
+            <th>Mã bài tập</th>
+            <th>Đề bài</th>
+            <th>Test Script</th>
             <th>Kết quả test case</th>
             <th>Điểm số</th>
-            <th>Báo cáo chi tiết</th>
+            <th>Thông báo lỗi</th>
           </tr>
         </thead>
         <tbody class="body-table"></tbody>

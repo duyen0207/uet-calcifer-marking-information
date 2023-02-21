@@ -1,0 +1,66 @@
+/**
+ * Scoring submissions
+ * @param {Array} submissions Submissions of student
+ * @param {*} database
+ * @param {*} connection
+ * @returns
+ */
+function ScoringSubmissions(submissions = [], database, connection) {
+  let ScoredSubmissions = [];
+  if (submissions.length == 0) {
+    return;
+  }
+  const response = new Promise((resolve) => {
+    const dataQuery = "CALL Proc_Submission_GetProblemTestCases(?)";
+    for (let i = 0; i < submissions.length; i++) {
+      // get tests suite
+      database.query(
+        dataQuery,
+        submissions[i].SubmissionId,
+        function (err, result, fields) {
+          if (err) throw err;
+
+          // Calculate score
+          console.log("Submission", submissions[i].SubmissionId);
+          submissions[i].Score = getScoreByTestResult(
+            submissions[i].TestcaseResult,
+            result[0]
+          );
+          // push score into submission
+          ScoredSubmissions.push(submissions[i]);
+          if (ScoredSubmissions.length === submissions.length) {
+            console.log("length:", ScoredSubmissions.length);
+            resolve(ScoredSubmissions);
+          }
+        }
+      );
+    }
+  }).then((res) => {
+    console.log("Scored Successfully!", res);
+  });
+}
+
+// get score according to test result
+function getScoreByTestResult(TestcaseResult = "", TestsSuite = []) {
+  let score = 0;
+  console.log("Calculate score with:", TestcaseResult);
+  for (let i = 0; i < TestcaseResult.length; i++) {
+    if (TestcaseResult.charAt(i) == 1) {
+      console.log(
+        "Plus: ",
+        i,
+        " because state is",
+        TestcaseResult.charAt(i),
+        "- Score of test",
+        TestsSuite[i].TestOrder,
+        "is",
+        TestsSuite[i].Score
+      );
+      score += TestsSuite[i].Score;
+    }
+  }
+  console.log("after scored: ", score);
+  return score;
+}
+
+module.exports = { ScoringSubmissions, getScoreByTestResult };

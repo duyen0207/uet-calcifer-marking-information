@@ -19,7 +19,7 @@ $(document).ready(function () {
 
   // click in table
   var chooseColumn = null;
-  $("#marking-data-table >tbody").click(function (e) {
+  $("#scoring-data-table >tbody").click(function (e) {
     e.stopPropagation();
 
     const element = e.target;
@@ -78,7 +78,7 @@ $(document).ready(function () {
   });
 
   $("#submit-button").click(function (e) {
-    console.log("click submit");
+    console.log("click submit", e);
     // e.preventDefault();
     onSubmitData(e);
   });
@@ -180,26 +180,26 @@ function createDataRows(data, totalRecords) {
   // console.log(data);
   $(".total-records").append(`${totalRecords}`);
   for (let i = 0; i < data.length; i++) {
-    $("#marking-data-table > tbody").append(`<tr id='${formatData(
-      data[i]?.StudentId
+    $("#scoring-data-table > tbody").append(`<tr id='${formatData(
+      data[i]?.SubmissionId
     )}'>
     <td class="No">${i}</td>
     <td class="studentId">${formatData(data[i]?.StudentId)}</td>
     <td class="fullName">${formatData(data[i]?.FullName)}</td>
-    <td class="problemTitle">${formatData(data[i]?.ProblemTitle)}</td>
-    <td class="exerciseId">${formatData(data[i]?.ExerciseId)}</td>
     <td class="classId">${formatData(data[i]?.ClassId)}</td>
-
     <td class="submissionId">${formatData(data[i]?.SubmissionId)}</td>
     <td class="iter">${formatData(data[i]?.Iter)}</td>
-    <td class="testcaseScript"><a href="${formatData(
-      data[i]?.TestcaseScript
-    )}">${formatData(data[i]?.TestcaseScript)}</a></td>
     <td class="submittedLink"><a href="${formatData(
       data[i]?.SubmittedLink
     )}" target="_blank">${formatData(data[i]?.SubmittedLink)}</a></td>
-    <td class="testcaseResult">${formatData(data[i]?.TestcaseResult)}</td>
-    <td class="score">${formatData(data[i]?.Score)}</td>
+      <td class="exerciseId">${formatData(data[i]?.ExerciseId)}</td>
+      <td class="problemTitle">${formatData(data[i]?.ProblemTitle)}</td>
+
+    <td class="testcaseScript"><a href="${formatData(
+      data[i]?.TestcaseScript
+    )}">${formatData(data[i]?.TestcaseScript)}</a></td>
+    <td class="testcaseResult"><input type='text'/></td>
+    <td class="score"><input type='text'/></td>
     <td class="submissionReport">${
       formatData(data[i]?.Score) != ""
         ? `<div id='${formatData(
@@ -231,17 +231,21 @@ function createReportDataRows(data = REPORT_DATA) {
 
 // collect inputs--------------------------------------------
 function onSubmitData(e) {
-  let submissionIdRows = $(".body-table tr td.submissionId");
-  let testcaseResultRows = $(".body-table tr td.testcaseResult");
-  let scoreRows = $(".body-table tr td.score");
-  let submissionReportRows = $(".body-table tr td.submissionReport");
+  // alert(`Update marks successful records!`);
 
+  let submissionIdRows = $(".body-table tr td.submissionId");
+  let testcaseResultRows = $(".body-table tr td.testcaseResult input");
+  let scoreRows = $(".body-table tr td.score input");
+  let submissionReportRows = $(".body-table tr td.submissionReport textarea");
+  console.log("submit", e);
   let submissionData = [];
+  console.log("aaaaaaaaa", $(scoreRows[0]).val());
 
   for (let i = 0; i < submissionIdRows.length; i++) {
     const submissionId = submissionIdRows[i].innerText;
-    const testcaseResult = testcaseResultRows[i].innerText;
-    const score = scoreRows[i].innerText;
+    const testcaseResult = $(testcaseResultRows[i]).val();
+    const score = $(scoreRows[i]).val();
+    // const submissionReports = $(submissionReportRows[i]).val();
 
     if (testcaseResult != "" && score != "") {
       // chú ý: submission report lấy từ input phải được bao ngoài bởi dấu ``
@@ -274,9 +278,9 @@ function onSubmitData(e) {
     submissionData: submissionData,
   });
 
-  updateMarkingData(submissionData);
+  // updateMarkingData(submissionData);
 
-  // alert(`Update marks successful ${updateAmount} records!`);
+  // alert(`Update marks successful records!`);
 }
 
 // utils functions----------------------------------------------
@@ -284,7 +288,7 @@ function onSubmitData(e) {
  * Function: empty table data
  */
 function emptyTable() {
-  $("#marking-data-table > tbody").empty();
+  $("#scoring-data-table > tbody").empty();
   $(".total-records").empty();
 }
 function formatData(data) {
