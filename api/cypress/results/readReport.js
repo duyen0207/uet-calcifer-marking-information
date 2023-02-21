@@ -60,4 +60,4 @@ function getScoringResult(report, testCaseResults, errorReport) {
   }
 }
 
-module.exports = { readReport, getScoringResult };
+module.exports = { readReport};

@@ -11,7 +11,7 @@ const mysql = require("mysql");
 const { notEmpty, resetSuccessCount, formatJSON } = require("./utils/utils");
 const { exportJSONFile } = require("./utils/handleFile");
 const { readReport } = require("./cypress/results/readReport");
-const { getScoreByTestResult, ScoringSubmissions } = require("./utils/scoring");
+const { ScoringSubmissions } = require("./utils/scoring");
 
 const app = express();
 const port = 3001;
@@ -43,10 +43,9 @@ const database = mysql.createPool(config);
 
 getNotScoredSubmissions(database);
 
-// cron.schedule("*/5 * * * * *", async function () {
+// cron.schedule("*/3 * * * * *", async function () {
 //   console.log("Cron job");
 //   getNotScoredSubmissions(database);
-//   // console.log("this is data: ", getNotScoredSubmissions(database));
 //   // if (shell.exec("node cronJob/cronTest.js").code !== 0) {
 //   //   console.log("Some thing went wrong!");
 //   // }

@@ -37,6 +37,8 @@ function ScoringSubmissions(submissions = [], database, connection) {
     }
   }).then((res) => {
     console.log("Scored Successfully!", res);
+    // submit into database
+    submitScoringData(res, database, connection);
   });
 }
 
@@ -61,6 +63,40 @@ function getScoreByTestResult(TestcaseResult = "", TestsSuite = []) {
   }
   console.log("after scored: ", score);
   return score;
+}
+
+function submitScoringData(submissions, database, connection) {
+  console.log("[5] Submit data");
+
+  const submissionSql = "CALL Proc_Submission_UpdateScoreResult(?,?,?)";
+  const submissionReportSql = "CALL Proc_SubmissionReport_Insert(?,?,?)";
+  for (const submission of submissions) {
+    //   submit test result
+    database.query(
+      submissionSql,
+      [submission.SubmissionId, submission.TestcaseResult, submission.Score],
+      function (err, result, fields) {
+        if (err) throw err;
+        console.log(result);
+      }
+    );
+
+    //   submit error report
+    for (const errorReport of submission.errorReports) {
+      database.query(
+        submissionReportSql,
+        [
+          submission.SubmissionId,
+          errorReport.ErrorTestcaseOrder,
+          errorReport.ErrorReport,
+        ],
+        function (err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+        }
+      );
+    }
+  }
 }
 
 module.exports = { ScoringSubmissions, getScoreByTestResult };
