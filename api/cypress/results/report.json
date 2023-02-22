@@ -1,0 +1,396 @@
+{
+  "stats": {
+    "suites": 4,
+    "tests": 12,
+    "passes": 7,
+    "pending": 0,
+    "failures": 5,
+    "start": "2023-02-22T08:32:51.423Z",
+    "end": "2023-02-22T08:32:56.391Z",
+    "duration": 4968,
+    "testsRegistered": 12,
+    "passPercent": 58.333333333333336,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "44b2dd38-3599-4130-b4e5-0a7b988614ac",
+      "title": "",
+      "fullFile": "cypress\\e2e\\scoring\\scoring.cy.js",
+      "file": "cypress\\e2e\\scoring\\scoring.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "9a9baad0-9f83-4463-88e9-308dbb578553",
+          "title": "submit_6",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "00170e0d-bc7e-4022-bb79-30444f51ff36",
+              "title": "Block/structural semantics",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Have Doctype",
+                  "fullTitle": "submit_6 Block/structural semantics Have Doctype",
+                  "timedOut": null,
+                  "duration": 201,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.document().then(doc => {\n  expect(doc.doctype !== undefined).to.eq(true);\n  expect(doc.doctype.name).to.eq(\"html\");\n});",
+                  "err": {},
+                  "uuid": "8e8b8ffd-3f49-4a03-999e-9d4a1df510f0",
+                  "parentUUID": "00170e0d-bc7e-4022-bb79-30444f51ff36",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Heading organization",
+                  "fullTitle": "submit_6 Block/structural semantics Heading organization",
+                  "timedOut": null,
+                  "duration": 148,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get(\"h1\").should(\"contain\", \"Re: Eileen Dover university application\");\ncy.get(\"h2\").should(\"contain\", \"Starting dates\");\ncy.get(\"h2\").should(\"contain\", \"Subjects of study\");\ncy.get(\"h2\").should(\"contain\", \"Exotic dance moves\");",
+                  "err": {},
+                  "uuid": "07c939ce-2222-4579-8479-30e5df4c8a40",
+                  "parentUUID": "00170e0d-bc7e-4022-bb79-30444f51ff36",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Use list type to mark up list in letter",
+                  "fullTitle": "submit_6 Block/structural semantics Use list type to mark up list in letter",
+                  "timedOut": null,
+                  "duration": 313,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "const list = [\"First semester: 9 September 2016\", \"Second semester: 15 January 2017\", \"Third semester: 2 May 2017\", \"Turning H2O into wine, and the health benefits of Resveratrol (C14H12O3.)\", \"Measuring the effect on performance of funk bassplayers at temperatures exceeding 30°C (86°F), when the audience size exponentially increases (effect of 3 × 103 increasing to 3 × 104.)\", \"HTML and CSS constructs for representing musical scores.\"];\nconst description_list = [\"Polynesian chicken dance\", \"Icelandic brownian shuffle\", \"Arctic robot dance\"];\nlist.forEach(item => {\n  cy.contains(\"li\", item);\n});\ndescription_list.forEach(item => {\n  cy.contains(\"dt\", item);\n});",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 200ms: Expected to find content: 'Second semester: 15 January 2017' within the selector: 'li' but never did.",
+                    "estack": "AssertionError: Timed out retrying after 200ms: Expected to find content: 'Second semester: 15 January 2017' within the selector: 'li' but never did.\n    at eval (webpack:///./cypress/e2e/lab-letter/Letter.cy.js:50:15)\nat Array.forEach (<anonymous>)\n    at Context.eval (webpack:///./cypress/e2e/lab-letter/Letter.cy.js:49:15)",
+                    "diff": null
+                  },
+                  "uuid": "c4a2a83d-88f7-41fe-9769-ca55f9b5e65a",
+                  "parentUUID": "00170e0d-bc7e-4022-bb79-30444f51ff36",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Put addresses inside <address> elements",
+                  "fullTitle": "submit_6 Block/structural semantics Put addresses inside <address> elements",
+                  "timedOut": null,
+                  "duration": 137,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const addresses = [\"Awesome Science faculty\", \"University of Awesome\", \"Bobtown, CA 99999,\", \"USA\", \"4321 Cliff Top Edge\", \"Dover, CT9 XXX\", \"UK\"];\naddresses.forEach(item => {\n  cy.contains(\"address\", item);\n});\ncy.get(\"address\").find(\"br\");",
+                  "err": {},
+                  "uuid": "efcd7c1c-94f1-4837-a017-72e277df9c1c",
+                  "parentUUID": "00170e0d-bc7e-4022-bb79-30444f51ff36",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "8e8b8ffd-3f49-4a03-999e-9d4a1df510f0",
+                "07c939ce-2222-4579-8479-30e5df4c8a40",
+                "efcd7c1c-94f1-4837-a017-72e277df9c1c"
+              ],
+              "failures": [
+                "c4a2a83d-88f7-41fe-9769-ca55f9b5e65a"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 799,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "062a45a3-4643-4433-9746-c3bcaf499b0e",
+              "title": "Inline semantics",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Strong importance text",
+                  "fullTitle": "submit_6 Inline semantics Strong importance text",
+                  "timedOut": null,
+                  "duration": 344,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get(\"strong\").should(\"contain\", \"Tel:\");\ncy.get(\"strong\").should(\"contain\", \"Email:\");\ncy.get(\"strong\").should(\"contain\", \"Dr Eleanor Gaye\");\ncy.get(\"strong\").should(\"contain\", \"Miss Eileen Dover\");",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 200ms: expected '[ <strong>, 3 more... ]' to contain 'Dr Eleanor Gaye'",
+                    "estack": "AssertionError: Timed out retrying after 200ms: expected '[ <strong>, 3 more... ]' to contain 'Dr Eleanor Gaye'\n    at Context.eval (webpack:///./cypress/e2e/lab-letter/Letter.cy.js:85:25)",
+                    "diff": null
+                  },
+                  "uuid": "1cce4d1a-8853-4387-b8a3-1a8907a2f3c6",
+                  "parentUUID": "062a45a3-4643-4433-9746-c3bcaf499b0e",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Date must be in <time> tag",
+                  "fullTitle": "submit_6 Inline semantics Date must be in <time> tag",
+                  "timedOut": null,
+                  "duration": 268,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "const dates = [\"20 January 2016\", \"9 September 2016\", \"15 January 2017\", \"2 May 2017\"];\ndates.forEach(item => {\n  cy.contains(\"time\", item, {\n    timeout: 100\n  });\n});",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 100ms: Expected to find content: '15 January 2017' within the selector: 'time' but never did.",
+                    "estack": "AssertionError: Timed out retrying after 100ms: Expected to find content: '15 January 2017' within the selector: 'time' but never did.\n    at eval (webpack:///./cypress/e2e/lab-letter/Letter.cy.js:98:13)\nat Array.forEach (<anonymous>)\n    at Context.eval (webpack:///./cypress/e2e/lab-letter/Letter.cy.js:97:14)",
+                    "diff": null
+                  },
+                  "uuid": "61062570-1836-4d36-8a61-f384ccff9b9f",
+                  "parentUUID": "062a45a3-4643-4433-9746-c3bcaf499b0e",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Class sender-column",
+                  "fullTitle": "submit_6 Inline semantics Class sender-column",
+                  "timedOut": null,
+                  "duration": 139,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get(\"address\").first().then($firstAdd => {\n  cy.get(\".sender-column\").children(\"address\").should($add => {\n    expect($firstAdd[0] == $add[0]).to.eq(true);\n  });\n});\ncy.get(\".sender-column\").should(\"contain\", \"20 January 2016\");",
+                  "err": {},
+                  "uuid": "ca14dcf4-7b9f-4faf-97af-eaf416d42c43",
+                  "parentUUID": "062a45a3-4643-4433-9746-c3bcaf499b0e",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Check abbreviation",
+                  "fullTitle": "submit_6 Inline semantics Check abbreviation",
+                  "timedOut": null,
+                  "duration": 322,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "const abbreviations = [\"PhD\", \"HTML\", \"CSS\", \"BC\", \"Esq\"];\nconst titles = [\"Doctor of Philosophy\", \"HyperText Markup Language\", \"Cascading Style Sheets\", \"Before Christ\", \"Esquire\"];\nabbreviations.forEach((item, index) => {\n  console.log(\"hello\", titles[index]);\n  cy.get(\"abbr\", {\n    timeout: 100\n  }).eq(index).should(\"contain\", item).and(\"have.attr\", \"title\", titles[index]);\n});",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 200ms: expected '<abbr>' to have attribute 'title' with the value 'Doctor of Philosophy', but the value was 'phd'",
+                    "estack": "AssertionError: Timed out retrying after 200ms: expected '<abbr>' to have attribute 'title' with the value 'Doctor of Philosophy', but the value was 'phd'\n    at eval (webpack:///./cypress/e2e/lab-letter/Letter.cy.js:131:13)\nat Array.forEach (<anonymous>)\n    at Context.eval (webpack:///./cypress/e2e/lab-letter/Letter.cy.js:126:22)",
+                    "diff": "- 'phd'\n+ 'Doctor of Philosophy'\n"
+                  },
+                  "uuid": "fb781c7a-15eb-40be-98b6-6f396cf15290",
+                  "parentUUID": "062a45a3-4643-4433-9746-c3bcaf499b0e",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Sub/superscripts",
+                  "fullTitle": "submit_6 Inline semantics Sub/superscripts",
+                  "timedOut": null,
+                  "duration": 155,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const subscripts = [\"2\", \"14\", \"12\", \"3\"];\nconst superscripts = [\"4\", \"3\"];\nsubscripts.forEach(item => {\n  cy.contains(\"sub\", item);\n});\nsuperscripts.forEach(item => {\n  cy.contains(\"sup\", item);\n});",
+                  "err": {},
+                  "uuid": "43f0bae2-50ea-45ad-bc4a-46b93b17a316",
+                  "parentUUID": "062a45a3-4643-4433-9746-c3bcaf499b0e",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Hyperlink",
+                  "fullTitle": "submit_6 Inline semantics Hyperlink",
+                  "timedOut": null,
+                  "duration": 139,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const links = [\"important university dates\", \"exotic dance research page\"];\nlinks.forEach((item, index) => {\n  cy.get(\"a\").eq(index).should(\"contain\", item).and(\"have.attr\", \"href\");\n});",
+                  "err": {},
+                  "uuid": "5080c558-5606-44e9-885f-331d2b221819",
+                  "parentUUID": "062a45a3-4643-4433-9746-c3bcaf499b0e",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Quote",
+                  "fullTitle": "submit_6 Inline semantics Quote",
+                  "timedOut": null,
+                  "duration": 183,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.contains(\"q\", \"Be awesome to each other.\");",
+                  "err": {},
+                  "uuid": "5e098631-bcf6-44be-a670-625827d921a7",
+                  "parentUUID": "062a45a3-4643-4433-9746-c3bcaf499b0e",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "ca14dcf4-7b9f-4faf-97af-eaf416d42c43",
+                "43f0bae2-50ea-45ad-bc4a-46b93b17a316",
+                "5080c558-5606-44e9-885f-331d2b221819",
+                "5e098631-bcf6-44be-a670-625827d921a7"
+              ],
+              "failures": [
+                "1cce4d1a-8853-4387-b8a3-1a8907a2f3c6",
+                "61062570-1836-4d36-8a61-f384ccff9b9f",
+                "fb781c7a-15eb-40be-98b6-6f396cf15290"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 1550,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "3cd4e3d7-a18c-45dc-9397-39afb7dcee18",
+              "title": "The head of the document",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Meta data",
+                  "fullTitle": "submit_6 The head of the document Meta data",
+                  "timedOut": null,
+                  "duration": 304,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get(\"meta\").should(\"have.attr\", \"charset\", \"utf-8\");\ncy.get(\"link\").should(\"have.attr\", \"rel\", \"stylesheet\");\ncy.get(\"meta\").should(\"have.attr\", \"name\", \"author\");",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 200ms: expected '[ <meta>, 2 more... ]' to have attribute 'charset' with the value 'utf-8', but the value was 'UTF-8'",
+                    "estack": "AssertionError: Timed out retrying after 200ms: expected '[ <meta>, 2 more... ]' to have attribute 'charset' with the value 'utf-8', but the value was 'UTF-8'\n    at Context.eval (webpack:///./cypress/e2e/lab-letter/Letter.cy.js:168:23)",
+                    "diff": "- 'UTF-8'\n+ 'utf-8'\n"
+                  },
+                  "uuid": "b03c24a0-8051-4b6f-a792-d4515e5f179c",
+                  "parentUUID": "3cd4e3d7-a18c-45dc-9397-39afb7dcee18",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [],
+              "failures": [
+                "b03c24a0-8051-4b6f-a792-d4515e5f179c"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 304,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "report",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/results",
+        "reportFilename": "report",
+        "overwrite": true,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

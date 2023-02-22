@@ -20,7 +20,8 @@ function ScoringSubmissions(submissions = [], database, connection) {
         submissions[i].SubmissionId,
         function (err, result, fields) {
           if (err) {
-            console.log("data query error: ", err);
+            console.log("data query error: ", err.code, err?.sqlMessage, err?.sqlState);
+            
             return;
           }
 
@@ -88,7 +89,7 @@ function submitScoringData(submissions, database, connection) {
       [submission.SubmissionId, submission.TestcaseResult, submission.Score],
       function (err, result, fields) {
         if (err) {
-          console.log("data query error: ", err);
+          console.log("data query error: ", err.code, err?.sqlMessage, err?.sqlState);
           return;
         }
         // console.log(result);
@@ -106,7 +107,7 @@ function submitScoringData(submissions, database, connection) {
         ],
         function (err, result, fields) {
           if (err) {
-            console.log("data query error: ", err);
+            console.log("data query error: ", err.code, err?.sqlMessage, err?.sqlState);
             return;
           }
           // console.log(result);

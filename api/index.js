@@ -46,7 +46,7 @@ const cronDatabase = mysql.createPool(config);
 app.get("/", (req, res) => {
   ejs.renderFile("views/ssr.ejs", {}, {}, function (err, template) {
     if (err) {
-      console.log("data query error: ", err);
+      console.log("data query error: ", err.code, err?.sqlMessage, err?.sqlState);
     } else {
       res.end(template);
     }
@@ -67,7 +67,8 @@ app.get("/data/filter", (req, res) => {
 
     database.query(sql, search, function (err, result, fields) {
       if (err) {
-        console.log("Error is: ", err);
+        console.log("Error is: ", err.code);
+        return;
       }
       const data = result;
       const output = {
@@ -77,7 +78,7 @@ app.get("/data/filter", (req, res) => {
 
       // console.log("data ", data[0]);
       res.json(output);
-      tempConnection.release(error => error ? reject(error) : resolve());;
+      tempConnection.release((error) => (error ? reject(error) : resolve()));
     });
   });
 });
@@ -95,11 +96,11 @@ app.get("/data/submission-report", (req, res) => {
 
       database.query(dataQuery, submissionId, function (err, result, fields) {
         if (err) {
-          console.log("Error is: ", err);
+          console.log("Error is: ", err.code);
         }
 
         res.json(result);
-        tempConnection.release(error => error ? reject(error) : resolve());;
+        tempConnection.release((error) => (error ? reject(error) : resolve()));
       });
     } else res.json((message = "không tìm được"));
   });
@@ -126,7 +127,7 @@ function pushMarkingData(data) {
           function (err, result, fields) {
             if (err) {
               console.log(err.code);
-              res.send("Error occured.", err);
+              res.send("Error occured.", err.code);
               errors.push({
                 submissionId: data[i].submissionId,
                 error: `Update lỗi: ${err.code}`,
@@ -203,7 +204,7 @@ app.put("/data", (req, res) => {
     const data = req.body;
 
     if (err) {
-      res.send("Error occured.", err);
+      res.send("Error occured.", err.code);
     }
 
     pushMarkingData(data).then((results) => {
@@ -217,7 +218,7 @@ app.put("/data", (req, res) => {
           },
         };
         res.json(output);
-        tempConnection.release(error => error ? reject(error) : resolve());;
+        tempConnection.release((error) => (error ? reject(error) : resolve()));
         return results;
       });
     });
@@ -248,20 +249,25 @@ cron.schedule("*/5 * * * * *", function () {
 function getNotScoredSubmissions(database) {
   database.getConnection(function (err, tempConnection) {
     if (err) {
-      console.log("Error is: ", err);
+      console.log("Error is: ", err.code);
+      tempConnection.release((error) => (error ? reject(error) : resolve()));
+      return;
     }
     const sql = "CALL Proc_Submission_GetNotScored";
 
     database.query(sql, function (err, result, fields) {
       if (err) {
-        console.log("Error is: ", err);
+        console.log("Error is: ", err.code);
+        tempConnection.release((error) => (error ? reject(error) : resolve()));
+
+        return;
       }
       const data = result[0];
 
       console.log("this is data length: ", data.length);
       if (data.length == 0) {
         console.log("Every submission is scored. Nothing to do!");
-        tempConnection.release(error => error ? reject(error) : resolve());;
+        tempConnection.release((error) => (error ? reject(error) : resolve()));
         return;
       }
 
