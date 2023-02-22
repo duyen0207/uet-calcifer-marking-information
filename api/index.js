@@ -40,16 +40,7 @@ const config = {
   database: "uet_calcifer",
 };
 const database = mysql.createPool(config);
-
-getNotScoredSubmissions(database);
-
-// cron.schedule("*/3 * * * * *", async function () {
-//   console.log("Cron job");
-//   getNotScoredSubmissions(database);
-//   // if (shell.exec("node cronJob/cronTest.js").code !== 0) {
-//   //   console.log("Some thing went wrong!");
-//   // }
-// });
+const cronDatabase = mysql.createPool(config);
 
 // routes-------------------------------------------------------
 app.get("/", (req, res) => {
@@ -65,7 +56,9 @@ app.get("/", (req, res) => {
 // load data
 app.get("/data/filter", (req, res) => {
   database.getConnection(function (err, tempConnection) {
-    if (err) res.send("Error occured.");
+    if (err) {
+      res.send("Error occured.");
+    }
 
     const isMarked = req.query?.isMarked;
     const search = req.query?.search;
@@ -73,7 +66,9 @@ app.get("/data/filter", (req, res) => {
     const sql = "CALL Proc_Submission_GetNotScoredAndSearch(?)";
 
     database.query(sql, search, function (err, result, fields) {
-      if (err) throw err;
+      if (err) {
+        console.log("Error is: ", err);
+      }
       const data = result;
       const output = {
         totalRecords: result.length,
@@ -82,14 +77,16 @@ app.get("/data/filter", (req, res) => {
 
       // console.log("data ", data[0]);
       res.json(output);
-      tempConnection.release();
+      tempConnection.release(error => error ? reject(error) : resolve());;
     });
   });
 });
 // load submission report
 app.get("/data/submission-report", (req, res) => {
   database.getConnection(function (err, tempConnection) {
-    if (err) res.send("Error occured.");
+    if (err) {
+      res.send("Error occured.");
+    }
 
     const submissionId = req.query?.submissionId;
 
@@ -97,10 +94,12 @@ app.get("/data/submission-report", (req, res) => {
       const dataQuery = "CALL Proc_SubmissionReport_GetOf(?)";
 
       database.query(dataQuery, submissionId, function (err, result, fields) {
-        if (err) throw err;
+        if (err) {
+          console.log("Error is: ", err);
+        }
 
         res.json(result);
-        tempConnection.release();
+        tempConnection.release(error => error ? reject(error) : resolve());;
       });
     } else res.json((message = "không tìm được"));
   });
@@ -218,7 +217,7 @@ app.put("/data", (req, res) => {
           },
         };
         res.json(output);
-        tempConnection.release();
+        tempConnection.release(error => error ? reject(error) : resolve());;
         return results;
       });
     });
@@ -235,30 +234,50 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
+// getNotScoredSubmissions(database);
+
+cron.schedule("*/5 * * * * *", function () {
+  console.log("Cron job==============================================");
+  getNotScoredSubmissions(cronDatabase);
+  // if (shell.exec("node cronJob/cronTest.js").code !== 0) {
+  //   console.log("Some thing went wrong!");
+  // }
+});
+
 // get data function------------------------------------
 function getNotScoredSubmissions(database) {
   database.getConnection(function (err, tempConnection) {
-    if (err) console.log("Error is: ", err);
-
+    if (err) {
+      console.log("Error is: ", err);
+    }
     const sql = "CALL Proc_Submission_GetNotScored";
 
-    console.log("[1] Getting submissions not scored...");
     database.query(sql, function (err, result, fields) {
-      if (err) throw err;
+      if (err) {
+        console.log("Error is: ", err);
+      }
       const data = result[0];
-      const output = {
-        totalRecords: result.length,
-        data: data,
-      };
 
+      console.log("this is data length: ", data.length);
+      if (data.length == 0) {
+        console.log("Every submission is scored. Nothing to do!");
+        tempConnection.release(error => error ? reject(error) : resolve());;
+        return;
+      }
+
+      console.log("[1] Getting submissions not scored...");
       exportJSONFile(data);
 
       // cypress run
-      shell.exec("yarn cy:scoring");
-      console.log("Doneeee!");
+      console.log("[3] Cypress run");
+      shell.exec("npx cypress run --spec cypress/e2e/scoring/scoring.cy.js");
+      console.log("Cypress Done!!!");
 
       let reports = readReport();
+      // const res = async () =>
+      //   await ScoringSubmissions(reports, database, tempConnection);
       ScoringSubmissions(reports, database, tempConnection);
+      // res();
     });
   });
 }

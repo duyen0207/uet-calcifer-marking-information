@@ -5,11 +5,11 @@ function readReport() {
   if (!REPORT_DATA) return;
   REPORT_DATA = JSON.stringify(REPORT_DATA);
   const ScoringReport = JSON.parse(REPORT_DATA).results[0];
-  
+
   const SubmissionsResult = ScoringReport.suites;
-  
+
   let reports = [];
-  
+
   console.log("[4] Reading cypress json report...");
   for (const submission of SubmissionsResult) {
     console.log(submission.title);
@@ -24,6 +24,7 @@ function readReport() {
       errorReports: errorReport,
     });
   }
+  console.log("Read report done.", reports.length);
   return reports;
 }
 
@@ -60,4 +61,4 @@ function getScoringResult(report, testCaseResults, errorReport) {
   }
 }
 
-module.exports = { readReport};
+module.exports = { readReport };

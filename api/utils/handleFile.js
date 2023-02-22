@@ -17,7 +17,7 @@ function exportJSONFile(data, fileName = "submissions.json") {
 function readJSONFile(filePath) {
   try {
     var data = JSON.parse(fs.readFileSync(path=filePath));
-    // console.log("file data is:", data);
+    console.log("Read json file done.");
     return data;
   } catch (error) {
     console.error("Error!!: Read file failed with code: ", error.code);

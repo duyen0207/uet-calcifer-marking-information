@@ -10,8 +10,9 @@ function ScoringSubmissions(submissions = [], database, connection) {
   if (submissions.length == 0) {
     return;
   }
-  const response = new Promise((resolve) => {
+  return new Promise((resolve) => {
     const dataQuery = "CALL Proc_Submission_GetProblemTestCases(?)";
+    console.log("Get Test Score...");
     for (let i = 0; i < submissions.length; i++) {
       // get tests suite
       database.query(
@@ -36,13 +37,17 @@ function ScoringSubmissions(submissions = [], database, connection) {
       );
     }
   }).then((res) => {
-    console.log("Scored Successfully!", res);
+    // console.log("Scored Successfully!", res);
+    console.log("Scored Successfully!");
     // submit into database
     submitScoringData(res, database, connection);
+  }).then(()=>{
+    console.log("Release connection!");
+    connection.release(error => error ? reject(error) : resolve());;
   });
 }
 
-// get score according to test result
+//Pure function get score according to test result
 function getScoreByTestResult(TestcaseResult = "", TestsSuite = []) {
   let score = 0;
   console.log("Calculate score with:", TestcaseResult);
@@ -65,6 +70,7 @@ function getScoreByTestResult(TestcaseResult = "", TestsSuite = []) {
   return score;
 }
 
+// save scored submission into database
 function submitScoringData(submissions, database, connection) {
   console.log("[5] Submit data");
 
@@ -77,7 +83,7 @@ function submitScoringData(submissions, database, connection) {
       [submission.SubmissionId, submission.TestcaseResult, submission.Score],
       function (err, result, fields) {
         if (err) throw err;
-        console.log(result);
+        // console.log(result);
       }
     );
 
@@ -92,7 +98,7 @@ function submitScoringData(submissions, database, connection) {
         ],
         function (err, result, fields) {
           if (err) throw err;
-          console.log(result);
+          // console.log(result);
         }
       );
     }

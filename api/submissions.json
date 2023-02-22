@@ -1,19 +1,7 @@
 [
   {
-    "SubmissionId": "0001",
-    "SubmittedLink": "http://localhost/19020216_DoThiHongAnh_Letter/",
-    "ProblemId": 1,
-    "TestcaseScript": "https://www.wasterareor.hk/hiverour/lewaingere.html#8"
-  },
-  {
-    "SubmissionId": "0002",
-    "SubmittedLink": "http://localhost/20020193_BuiDinhDuong_Letter/",
-    "ProblemId": 1,
-    "TestcaseScript": "https://www.wasterareor.hk/hiverour/lewaingere.html#8"
-  },
-  {
-    "SubmissionId": "0003",
-    "SubmittedLink": "http://localhost/20020373_DuongVanCong_Letter/",
+    "SubmissionId": "submit_7",
+    "SubmittedLink": "http://localhost/20020485_PhamThiKieuTrang_Letter/",
     "ProblemId": 1,
     "TestcaseScript": "https://www.wasterareor.hk/hiverour/lewaingere.html#8"
   }
