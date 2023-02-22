@@ -19,7 +19,10 @@ function ScoringSubmissions(submissions = [], database, connection) {
         dataQuery,
         submissions[i].SubmissionId,
         function (err, result, fields) {
-          if (err) throw err;
+          if (err) {
+            console.log("data query error: ", err);
+            return;
+          }
 
           // Calculate score
           console.log("Submission", submissions[i].SubmissionId);
@@ -36,15 +39,17 @@ function ScoringSubmissions(submissions = [], database, connection) {
         }
       );
     }
-  }).then((res) => {
-    // console.log("Scored Successfully!", res);
-    console.log("Scored Successfully!");
-    // submit into database
-    submitScoringData(res, database, connection);
-  }).then(()=>{
-    console.log("Release connection!");
-    connection.release(error => error ? reject(error) : resolve());;
-  });
+  })
+    .then((res) => {
+      // console.log("Scored Successfully!", res);
+      console.log("Scored Successfully!");
+      // submit into database
+      submitScoringData(res, database, connection);
+    })
+    .then(() => {
+      console.log("Release connection!");
+      connection.release((error) => (error ? reject(error) : resolve()));
+    });
 }
 
 //Pure function get score according to test result
@@ -82,7 +87,10 @@ function submitScoringData(submissions, database, connection) {
       submissionSql,
       [submission.SubmissionId, submission.TestcaseResult, submission.Score],
       function (err, result, fields) {
-        if (err) throw err;
+        if (err) {
+          console.log("data query error: ", err);
+          return;
+        }
         // console.log(result);
       }
     );
@@ -97,7 +105,10 @@ function submitScoringData(submissions, database, connection) {
           errorReport.ErrorReport,
         ],
         function (err, result, fields) {
-          if (err) throw err;
+          if (err) {
+            console.log("data query error: ", err);
+            return;
+          }
           // console.log(result);
         }
       );

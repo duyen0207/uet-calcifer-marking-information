@@ -46,7 +46,7 @@ const cronDatabase = mysql.createPool(config);
 app.get("/", (req, res) => {
   ejs.renderFile("views/ssr.ejs", {}, {}, function (err, template) {
     if (err) {
-      throw err;
+      console.log("data query error: ", err);
     } else {
       res.end(template);
     }
