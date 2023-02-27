@@ -1,4 +1,4 @@
-const { readJSONFile } = require("../../utils/handleFile");
+const { readJSONFile } = require("./handleFile");
 
 function readReport() {
   let REPORT_DATA = readJSONFile("cypress/results/report.json");
@@ -10,9 +10,7 @@ function readReport() {
 
   let reports = [];
 
-  console.log("[4] Reading cypress json report...");
   for (const submission of SubmissionsResult) {
-    console.log(submission.title);
     var result = [];
     var errorReport = [];
 
@@ -24,7 +22,7 @@ function readReport() {
       errorReports: errorReport,
     });
   }
-  console.log("Read report done.", reports.length);
+  console.log("Read report done. Number of submissions:", reports.length);
   return reports;
 }
 
@@ -40,7 +38,6 @@ function getScoringResult(report, testCaseResults, errorReport) {
         testCase.state == "passed" ? 1 : testCase.state == "failed" ? 0 : -1;
       // console.log("\ttest: ", state, testCase.title);
       testCaseResults.push(state.toString());
-      //   console.log("aaaaaaaaaaaaaa", testCaseResults);
       if (state === 0)
         errorReport.push({
           uuid: testCase.uuid,
