@@ -1,8 +1,26 @@
 [
   {
-    "SubmissionId": "submit_6",
-    "SubmittedLink": "http://localhost/20020379_HoangNgocDung_Letter/",
+    "SubmissionId": "0001",
+    "SubmittedLink": "http://localhost/19020216_DoThiHongAnh_Letter/",
     "ProblemId": 1,
-    "TestcaseScript": "https://www.wasterareor.hk/hiverour/lewaingere.html#8"
+    "TestcaseScript": "cypress/e2e/scoring/scoring.cy.js",
+    "TestcaseResult": "",
+    "Score": null
+  },
+  {
+    "SubmissionId": "0002",
+    "SubmittedLink": "http://localhost/20020193_BuiDinhDuong_Letter/",
+    "ProblemId": 1,
+    "TestcaseScript": "cypress/e2e/scoring/scoring.cy.js",
+    "TestcaseResult": "",
+    "Score": null
+  },
+  {
+    "SubmissionId": "0003",
+    "SubmittedLink": "http://localhost/20020373_DuongVanCong_Letter/",
+    "ProblemId": 1,
+    "TestcaseScript": "cypress/e2e/scoring/scoring.cy.js",
+    "TestcaseResult": "",
+    "Score": null
   }
 ]
