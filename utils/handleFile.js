@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 // write JSON string to a file
-function exportJSONFile(data, fileName = "submissions.json") {
+function exportJSONFile(data, fileName = "data/submissions.json") {
   // convert JSON object to a string
   const jsonData = JSON.stringify(data, null, 2);
 

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import data from "../../../submissions.json";
+import data from "../../../data/submissions.json";
 import { LAB_LETTER } from "../problems/Letter.cy";
 
 console.log("[3] Cypress run");
