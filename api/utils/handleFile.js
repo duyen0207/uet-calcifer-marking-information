@@ -6,7 +6,6 @@ function exportJSONFile(data, fileName = "submissions.json") {
   const jsonData = JSON.stringify(data, null, 2);
 
   try {
-    console.log("[2] Export data to json file");
     fs.writeFileSync(fileName, jsonData);
     console.log("JSON data is saved.");
   } catch (error) {

@@ -1,11 +1,3 @@
-// utils function -----------------------------
-// function queryData(database, sql) {
-//   return new Promise(()=>{
-//     database.query()
-//   })
-// }
-
-
 function notEmpty(data) {
   if (data) return data.length != 0 && data != "undefined" && data != "null";
   return false;
