@@ -78,7 +78,8 @@ async function Scoring(promiseDatabase) {
   exportJSONFile(submissions);
 
   console.log("[3] Cypress run");
-  shell.exec("npx cypress run --spec cypress/e2e/scoring/scoring.cy.js");
+  // shell.exec("npx cypress run --quiet --spec cypress/e2e/scoring/scoring.cy.js");
+  shell.exec("yarn run cy:scoring");
   console.log("Cypress Done!!!");
 
   console.log("[4] Reading cypress json report...");
