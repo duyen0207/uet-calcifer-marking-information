@@ -7,7 +7,9 @@ module.exports = defineConfig({
     },
     screenshotOnRunFailure: false,
     video: false,
-    
+
+    defaultCommandTimeout: 200,
+
     reporter: "mochawesome",
     reporterOptions: {
       reportDir: "cypress/results",
