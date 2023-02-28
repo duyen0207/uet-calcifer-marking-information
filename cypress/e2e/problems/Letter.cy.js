@@ -1,8 +1,6 @@
 /// <reference types="cypress" />
 
-// export const LAB_LETTER = (url, submission = { SubmissionId: "0001" }) =>
-
-export default (url, submission = { SubmissionId: "0001" }) =>
+export default (url, submission) =>
   describe(`${submission.SubmissionId}`, () => {
     beforeEach(() => {
       Cypress.on("uncaught:exception", () => {
