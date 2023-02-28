@@ -23,3 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// no delay when typing
+Cypress.Keyboard.defaults({
+  keystrokeDelay: 0,
+});
