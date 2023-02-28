@@ -11,7 +11,10 @@ const cors = require("cors");
 
 const { exportJSONFile } = require("./utils/handleFile");
 const { readReport } = require("./utils/readReport");
-const { AnalysisReportAndUpdateScore, getNotScoredSubmissions } = require("./utils/scoring");
+const {
+  AnalysisReportAndUpdateScore,
+  getNotScoredSubmissions,
+} = require("./utils/scoring");
 
 // create the connection to database
 // connect to database
@@ -84,8 +87,9 @@ async function Scoring(promiseDatabase) {
 
   console.log("[4] Reading cypress json report...");
   let reports = readReport();
-
-  console.log("Analysis results report...");
-  await AnalysisReportAndUpdateScore(promiseDatabase, reports);
-  console.log("\nScoring done!!! The End.");
+  if (reports) {
+    console.log("Analysis results report...");
+    await AnalysisReportAndUpdateScore(promiseDatabase, reports);
+    console.log("\nScoring done!!! The End.");
+  }
 }

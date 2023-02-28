@@ -6,6 +6,12 @@ function readReport() {
   REPORT_DATA = JSON.stringify(REPORT_DATA);
   const ScoringReport = JSON.parse(REPORT_DATA).results[0];
 
+  // console.log("This is aaaaaaaaaaa:", ScoringReport);
+  if (ScoringReport == false) {
+    // console.log("This is aaaaaaaaaaa");
+    return null;
+  }
+
   const SubmissionsResult = ScoringReport.suites;
 
   let reports = [];
