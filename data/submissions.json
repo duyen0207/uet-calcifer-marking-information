@@ -1,0 +1,102 @@
+[
+  {
+    "SubmissionId": "20b89e40-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/Nguy%e1%bb%85n%20Vi%e1%bb%87t%20Kh%c3%a1nh%2021020521_718166_assignsubmission_file_/formtuan7/",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8a440-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/T%e1%ba%a1%20Ho%c3%a0ng%20Giang%2021021484_718138_assignsubmission_file_/form.html",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8a56a-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/Th%c3%a0nh%20Nam%20Nguy%e1%bb%85n_718154_assignsubmission_file_/form/",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8a68d-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/Thanh%20S%c6%a1n%20Nguy%e1%bb%85n_718141_assignsubmission_file_/form.html",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8a7b2-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/Tr%e1%ba%a7n%20B%c3%a1%20Ho%c3%a0ng_718171_assignsubmission_file_/",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8a8db-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/Tr%e1%ba%a7n%20Ng%e1%bb%8dc%20B%c3%a1ch_718131_assignsubmission_file_/form.html",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8aa09-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/Tr%e1%ba%a7n%20Quang%20Ph%c3%bac_718123_assignsubmission_file_/bai1.html",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8ac34-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/V%c5%a9%20Minh%20Tu%e1%ba%a5n_718158_assignsubmission_file_/form.html",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8ad6f-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/V%c5%a9%20Nh%e1%ba%adt%20Minh_718125_assignsubmission_file_/form.html",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  },
+  {
+    "SubmissionId": "20b8ab14-dde7-11ed-a031-0a0027000004",
+    "SubmittedLink": "http://localhost/Form/INT3306_21-Form/2223II_INT3306_21-(N2)-134706/Vi%e1%bb%87t%20Anh%20V%c5%a9_718107_assignsubmission_file_/formnhap.html",
+    "Iter": 1,
+    "ProblemId": 2,
+    "TestcaseScript": "Form.cy.js",
+    "TestcaseResult": null,
+    "Score": null,
+    "CreatedTime": "2023-04-18T12:47:02.000Z"
+  }
+]

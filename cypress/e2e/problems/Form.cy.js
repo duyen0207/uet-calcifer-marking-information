@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 export default (url, submission) =>
+
   describe(`${submission.SubmissionId}`, () => {
     beforeEach(() => {
       Cypress.on("uncaught:exception", (err, runnable) => {
@@ -11,24 +12,44 @@ export default (url, submission) =>
     });
 
     it("Đặt tâm điểm vào ô nhập họ tên khi mới vào trang", () => {
-      cy.get("input").first().should("have.focus");
+      cy.get('label:contains("Họ tên")').next("input").should("have.focus");
+      // cy.get("input").first().should("have.focus");
+    });
+
+    it("Gõ Enter sau khi nhập xong để chuyển sang ô tiếp theo", () => {
+      cy.get("input").first().type("nguyễn văn a").type("{enter}");
+      cy.get("input").eq(1).should("have.focus");
     });
 
     it("Đánh dấu các ô phải nhập với nền xanh", () => {
-      cy.get("input").eq(0).should("have.css", "background-color");
-      cy.get('input[type="text"]').eq(2).and("have.css", "background-color");
-      cy.get('input[type="text"]').eq(3).and("have.css", "background-color");
-      cy.get('input[type="text"]').eq(5).and("have.css", "background-color");
+      cy.get("label")
+      .contains(/Họ tên|Họ Tên/g)
+        .next("input")
+        .should("have.css", "background-color");
+      cy.get("label")
+      .contains(/Ngày sinh|Ngày Sinh/g)
+        .next("input")
+        .should("have.css", "background-color");
+      cy.get("label")
+        .contains(/Email|E-mail/g)
+        .next("input")
+        .should("have.css", "background-color");
+      cy.get("label")
+      .contains(/Tên sử dụng|Tên Sử Dụng/g)
+        .next("input")
+        .should("have.css", "background-color");
     });
 
     it("Chuẩn hóa họ tên khi nhập xong ô Họ tên", () => {
-      cy.get('input[type="text"]')
-        .eq(0)
+      cy.get("label")
+      .contains(/Họ tên|Họ Tên/g)
+        .next("input")
         .type("nguyễn văn nam")
         .blur()
         .should("have.value", "Nguyễn Văn Nam");
-      cy.get('input[type="text"]')
-        .eq(0)
+      cy.get("label")
+      .contains(/Họ tên|Họ Tên/g)
+        .next("input")
         .clear()
         .type("nguyễn thị    an")
         .blur()
@@ -36,31 +57,54 @@ export default (url, submission) =>
     });
 
     it("Thông báo khi chưa nhập email", () => {
-      cy.get("#email");
-      cy.contains("Chấp nhận").click();
+      cy.get("label")
+        .contains(/Email|E-mail/g)
+        .next("input")
+        .click();
+      cy.get(
+        "input[value='Chấp nhận'],input[value='Đăng ký'], button:contains('Chấp nhận'), button:contains('Đăng ký')"
+      ).click();
 
-      cy.get("#email + span").should("contain.text", "Quý vị chưa nhập");
+      cy.get("label")
+        .contains(/Email|E-mail/g)
+        .next("input")
+        .next("span")
+        .should("contain.text", "nhập");
     });
 
     it("Thông báo khi email không đúng định dạng", () => {
-      cy.get("#email").type("abc@gmail");
+      cy.get("label")
+        .contains(/Email|E-mail/g)
+        .next("input")
+        .type("abc@gmail");
 
-      cy.contains("Chấp nhận").click();
-      cy.get("#email + span").should(
-        "contain.text",
-        "Email không đúng định dạng"
-      );
+      cy.get(
+        "input[value='Chấp nhận'],input[value='Đăng ký'], button:contains('Chấp nhận'), button:contains('Đăng ký')"
+      ).click();
+
+      cy.get("label")
+        .contains(/Email|E-mail/g)
+        .next("input")
+        .next("span")
+        .contains(/định dạng|Định dạng|hợp lệ/g);
     });
 
     it("Thông báo khi ngày sinh không đúng định dạng", () => {
-      cy.get("input").eq(4).type("abcd");
-      cy.contains("Chấp nhận").click();
-      cy.contains("Ngày sinh không đúng định dạng");
+      cy.get("label").contains("Ngày sinh").next("input").type(20052001);
+      cy.get(
+        "input[value='Chấp nhận'],input[value='Đăng ký'], button:contains('Chấp nhận'), button:contains('Đăng ký')"
+      ).click();
+      cy.get("label")
+      .contains(/Ngày sinh|Ngày Sinh/g)
+        .next("input")
+        .next("span")
+        .contains(/định dạng|Định dạng|hợp lệ/g);
     });
 
     it("Tự động thêm dấu cách khi nhập đủ ngày hoặc tháng", () => {
-      cy.get("input")
-        .eq(4)
+      cy.get("label")
+      .contains(/Ngày sinh|Ngày Sinh/g)
+        .next("input")
         .type("10022001")
         .blur()
         .should("have.value", "10/02/2001");
@@ -69,22 +113,37 @@ export default (url, submission) =>
     it("Có kiểm tra trùng khớp mật khẩu", () => {
       cy.get("input[type='password']").eq(0).type("1234");
       cy.get("input[type='password']").eq(1).type("12345");
-      cy.contains("Chấp nhận").click();
-      // cy.contains("Mật khẩu và gõ lại mật khẩu không trùng nhau");
-      cy.get("span").contains("Mật khẩu");
+
+      cy.get(
+        "input[value='Chấp nhận'],input[value='Đăng ký'], button:contains('Chấp nhận'), button:contains('Đăng ký')"
+      ).click();
+      cy.get("input[type='password']").next("span").contains("Mật khẩu");
     });
 
     it("Kiểm tra các thông tin đã được nhập hay chưa khi ấn nút chấp nhận", () => {
-      cy.contains("Chấp nhận").click();
-      cy.contains("Quý vị chưa nhập họ tên");
-      cy.contains("Quý vị chưa nhập ngày sinh");
-      // cy.contains("Quý vị chưa nhập e-mail");
-      cy.contains("Quý vị chưa nhập tên sử dụng");
-      cy.contains("Quý vị chưa nhập mật khẩu");
-    });
-
-    it("Gõ Enter sau khi nhập xong để chuyển sang ô tiếp theo", () => {
-      cy.get("input").first().type("nguyễn văn a").type("{enter}");
-      cy.get("input").eq(1).should("have.focus");
+      cy.get(
+        "input[value='Chấp nhận'],input[value='Đăng ký'], button:contains('Chấp nhận'), button:contains('Đăng ký')"
+      ).click();
+      cy.get("label")
+      .contains(/Họ tên|Họ Tên/g)
+        .next("input")
+        .next("span")
+        .should("contain.text", "nhập");
+      cy.get("label")
+      .contains(/Ngày sinh|Ngày Sinh/g)
+        .next("input")
+        .next("span")
+        .should("contain.text", "nhập");
+      cy.get("label")
+        .contains(/Email|E-mail/g)
+        .next("input")
+        .next("span")
+        .should("contain.text", "nhập");
+      cy.get("label")
+      .contains(/Tên sử dụng|Tên Sử Dụng/g)
+        .next("input")
+        .next("span")
+        .should("contain.text", "nhập");
+      cy.get("input[type='password']").next("span").contains("nhập");
     });
   });
