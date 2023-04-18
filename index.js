@@ -61,7 +61,9 @@ app.listen(port, () => {
 });
 
 // -----------------------------------------------------------------
-cron.schedule("*/5 * * * * *", function () {
+Scoring(promiseDatabase);
+
+cron.schedule("*/30 * * * * *", function () {
   console.log("Cron job==============================================");
   Scoring(promiseDatabase);
 });
@@ -88,6 +90,7 @@ async function Scoring(promiseDatabase) {
   console.log("[4] Reading cypress json report...");
   let reports = readReport();
   if (reports) {
+    if (reports.length == 0) return;
     console.log("Analysis results report...");
     await AnalysisReportAndUpdateScore(promiseDatabase, reports);
     console.log("\nScoring done!!! The End.");

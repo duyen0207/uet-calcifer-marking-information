@@ -16,7 +16,7 @@
     "start": "node index.js",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:scoring": "cypress run --quiet --spec cypress/e2e/scoring/scoring.cy.js",
+    "cy:scoring": "cypress run --browser chrome --headed --spec cypress/e2e/scoring/scoring.cy.js",
     "cy:test": "cypress run --spec cypress/e2e/problems/Form.cy.js"
   },
   "name": "uet-calcifer",

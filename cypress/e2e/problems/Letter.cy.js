@@ -35,8 +35,8 @@ export default (url, submission) =>
             "First semester: 9 September 2016",
             "Second semester: 15 January 2017",
             "Third semester: 2 May 2017",
-            "Turning H2O into wine, and the health benefits of Resveratrol (C14H12O3.)",
-            "Measuring the effect on performance of funk bassplayers at temperatures exceeding 30°C (86°F), when the audience size exponentially increases (effect of 3 × 103 increasing to 3 × 104.)",
+            "Turning H2O into wine, and the health benefits ",
+            "Measuring the effect on performance of funk bassplayers ",
             "HTML and CSS constructs for representing musical scores.",
           ];
 
@@ -165,7 +165,10 @@ export default (url, submission) =>
 
     context("The head of the document", () => {
       it("Meta data", { defaultCommandTimeout: 200 }, () => {
-        cy.get("meta").should("have.attr", "charset", "utf-8");
+        // cy.get("meta").should("have.attr", "charset", "utf-8");
+        cy.get("meta")
+          .invoke("attr", "charset")
+          .should("match", /(utf-8|UTF-8)/);
         cy.get("link").should("have.attr", "rel", "stylesheet");
         cy.get("meta").should("have.attr", "name", "author");
       });

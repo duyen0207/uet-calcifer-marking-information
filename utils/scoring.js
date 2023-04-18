@@ -2,7 +2,7 @@
 function getScoreByTestResult(TestcaseResult = "", TestSuite = []) {
   let score = 0;
   console.log("Calculate score with:", TestcaseResult);
-  for (let i = 0; i < TestcaseResult.length; i++) {
+  for (let i = 0; i < TestSuite.length; i++) {
     if (TestcaseResult.charAt(i) == 1) {
       score += TestSuite[i].Score;
     }
@@ -28,6 +28,9 @@ async function AnalysisReportAndUpdateScore(
       promiseDatabase,
       submission_report.SubmissionId
     );
+    if(submission_report.SubmissionId=='de84a9f2-c2be-11ed-b626-0a0027000005'){
+      console.log("Sai ở đây: ", submission_report.TestcaseResult);
+    }
     // calculate score
     const Score = getScoreByTestResult(
       submission_report.TestcaseResult,
